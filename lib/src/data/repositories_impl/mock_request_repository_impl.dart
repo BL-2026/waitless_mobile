@@ -20,39 +20,56 @@ class MockRequestRepositoryImpl implements RequestRepository {
     _requests.addAll([
       ServiceRequest(
         id: 'r1',
-        tableNumber: 7,
+        tableNumber: 12,
+        zone: 'terrace',
         type: RequestType.callWaiter,
         status: RequestStatus.open,
-        createdAt: now.subtract(const Duration(seconds: 5)),
+        createdAt: now.subtract(const Duration(seconds: 18)),
       ),
       ServiceRequest(
         id: 'r2',
-        tableNumber: 3,
+        tableNumber: 4,
+        zone: 'salon',
         type: RequestType.requestBill,
         status: RequestStatus.acknowledged,
         createdAt: now.subtract(const Duration(minutes: 2)),
         paymentMethod: 'card',
       ),
+      ServiceRequest(
+        id: 'r3',
+        tableNumber: 21,
+        zone: 'patio',
+        type: RequestType.callWaiter,
+        status: RequestStatus.open,
+        createdAt: now.subtract(const Duration(minutes: 4)),
+      ),
+      ServiceRequest(
+        id: 'r4',
+        tableNumber: 8,
+        zone: 'lounge',
+        type: RequestType.requestBill,
+        status: RequestStatus.open,
+        createdAt: now.subtract(const Duration(seconds: 40)),
+        paymentMethod: 'cash',
+      ),
     ]);
   }
 
   void _emit() {
-    // Only "open" and "acknowledged" requests belong in the active queue —
-    // resolved ones move to history (a separate use case/page later).
     final active = _requests
         .where((r) => r.status != RequestStatus.resolved)
-        .toList();
+        .toList()
+      ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
     _controller.add(active);
   }
 
-  /// Fakes a new table call arriving after a delay, so the queue screen
-  /// has something to react to without a real backend running.
   void _simulateIncomingRequest() {
     Timer(const Duration(seconds: 8), () {
       _requests.add(
         ServiceRequest(
-          id: 'r3',
-          tableNumber: 5,
+          id: 'r5',
+          tableNumber: 16,
+          zone: 'terrace',
           type: RequestType.callWaiter,
           status: RequestStatus.open,
           createdAt: DateTime.now(),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:waitless_mobile/src/config/app_localizations.dart';
 import 'package:waitless_mobile/src/presentation/cubits/auth/logout/logout_cubit.dart';
-import 'package:waitless_mobile/src/utils/constants/colors.dart';
+import 'package:waitless_mobile/src/utils/constants/app_colors.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Function()? refreshFunction;
@@ -96,8 +96,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context, true),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          const Color(green),
+                      backgroundColor: AppColors.espresso,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),

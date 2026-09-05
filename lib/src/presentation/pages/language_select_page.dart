@@ -4,8 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:waitless_mobile/src/config/app_localizations.dart';
 import 'package:waitless_mobile/src/domain/entities/app_language.dart';
 import 'package:waitless_mobile/src/presentation/cubits/language/language_cubit.dart';
+import 'package:waitless_mobile/src/presentation/widgets/shared/brand_mark.dart';
+import 'package:waitless_mobile/src/presentation/widgets/shared/primary_button.dart';
 import 'package:waitless_mobile/src/utils/constants/app_colors.dart';
 import 'package:waitless_mobile/src/utils/constants/strings.dart';
+import 'package:waitless_mobile/src/utils/theme/app_theme.dart';
 
 class LanguageSelectPage extends StatefulWidget {
   const LanguageSelectPage({super.key});
@@ -41,137 +44,98 @@ class _LanguageSelectPageState extends State<LanguageSelectPage> {
     final isAuthenticated = FirebaseAuth.instance.currentUser != null;
 
     return Scaffold(
-      backgroundColor: AppColors.paper,
+      backgroundColor: AppColors.canvas,
       appBar: isAuthenticated
           ? AppBar(
-              backgroundColor: AppColors.paper,
-              elevation: 0,
-              iconTheme: const IconThemeData(color: AppColors.ink),
-              title: Text(
-                l10n.language,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.ink,
-                ),
-              ),
+              title: Text(l10n.language),
             )
           : null,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (!isAuthenticated) const SizedBox(height: 24),
-              Text(
-                l10n.chooseLanguage,
-                style: const TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.ink,
-                ),
-              ),
-              const SizedBox(height: 8),
+              if (!isAuthenticated) ...[
+                const BrandMark(),
+                const SizedBox(height: 36),
+              ],
+              Text(l10n.chooseLanguage, style: AppTheme.display(30)),
+              const SizedBox(height: 10),
               Text(
                 l10n.languageSubtitle,
                 style: const TextStyle(
-                  fontSize: 14,
+                  fontSize: 15,
                   color: AppColors.muted,
-                  height: 1.4,
+                  height: 1.45,
                 ),
               ),
               const SizedBox(height: 28),
               Expanded(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 12,
-                  childAspectRatio: 1.15,
-                  children: AppLanguage.values
-                      .map(
-                        (language) => _LanguageCard(
-                          language: language,
-                          selected: language == _selected,
-                          onTap: () {
-                            setState(() => _selected = language);
-                            context.read<LanguageCubit>().setLanguage(language);
-                          },
+                child: ListView.separated(
+                  itemCount: AppLanguage.values.length,
+                  separatorBuilder: (_, _) => const SizedBox(height: 10),
+                  itemBuilder: (context, index) {
+                    final language = AppLanguage.values[index];
+                    final selected = language == _selected;
+                    return Material(
+                      color: selected ? AppColors.espresso : AppColors.surface,
+                      borderRadius: BorderRadius.circular(18),
+                      child: InkWell(
+                        onTap: () {
+                          setState(() => _selected = language);
+                          context.read<LanguageCubit>().setLanguage(language);
+                        },
+                        borderRadius: BorderRadius.circular(18),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 18,
+                            vertical: 18,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(
+                              color: selected ? AppColors.espresso : AppColors.line,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                language.flag,
+                                style: const TextStyle(fontSize: 26),
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Text(
+                                  language.nativeName,
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w600,
+                                    color: selected
+                                        ? Colors.white
+                                        : AppColors.espresso,
+                                  ),
+                                ),
+                              ),
+                              Icon(
+                                selected
+                                    ? Icons.check_circle
+                                    : Icons.circle_outlined,
+                                color: selected
+                                    ? AppColors.gold
+                                    : AppColors.line,
+                              ),
+                            ],
+                          ),
                         ),
-                      )
-                      .toList(),
+                      ),
+                    );
+                  },
                 ),
               ),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.ink,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  onPressed: _continue,
-                  child: Text(
-                    l10n.continueLabel,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _LanguageCard extends StatelessWidget {
-  const _LanguageCard({
-    required this.language,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final AppLanguage language;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: selected ? AppColors.ink : Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: selected ? AppColors.ink : AppColors.ink.withValues(alpha: 0.2),
-              width: selected ? 2 : 1,
-            ),
-          ),
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(language.flag, style: const TextStyle(fontSize: 32)),
-              const SizedBox(height: 10),
-              Text(
-                language.nativeName,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: selected ? Colors.white : AppColors.ink,
-                ),
+              PrimaryButton(
+                label: l10n.continueLabel,
+                onPressed: _continue,
               ),
             ],
           ),

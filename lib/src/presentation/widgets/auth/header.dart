@@ -1,48 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:waitless_mobile/src/utils/constants/app_colors.dart';
+import 'package:waitless_mobile/src/presentation/widgets/shared/brand_mark.dart';
 
-Widget buildHeader() {
-  return Column(
-    children: [
-      Container(
-        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
-        child: ShaderMask(
-          shaderCallback: (bounds) => const LinearGradient(
-            colors: [AppColors.ink, AppColors.teal],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ).createShader(bounds),
-          child: const Text(
-            'Waitless',
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-              letterSpacing: 1.1,
-            ),
+class AuthHeader extends StatelessWidget {
+  const AuthHeader({super.key, required this.subtitle});
+
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const BrandMark(),
+        const SizedBox(height: 12),
+        Text(
+          subtitle,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.black.withValues(alpha: 0.5),
+            fontSize: 15,
+            height: 1.4,
           ),
         ),
-      ),
-      const SizedBox(height: 20),
-      Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.ink),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: Image.asset(
-          'assets/images/auth_logo.png',
-          height: 180,
-          fit: BoxFit.cover,
-        ),
-      ),
-    ],
-  );
+      ],
+    );
+  }
 }

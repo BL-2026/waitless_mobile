@@ -19,31 +19,35 @@ class PinPad extends StatelessWidget {
       crossAxisCount: 3,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 14,
-      crossAxisSpacing: 14,
+      mainAxisSpacing: 12,
+      crossAxisSpacing: 12,
+      childAspectRatio: 1.35,
       children: keys.map((key) {
         if (key.isEmpty) return const SizedBox.shrink();
 
         final isBackspace = key == '⌫';
 
-        return InkWell(
-          borderRadius: BorderRadius.circular(999),
-          onTap: () => isBackspace ? onBackspace() : onDigit(key),
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isBackspace ? Colors.transparent : Colors.white,
-              border: isBackspace
-                  ? null
-                  : Border.all(color: const Color(0xFFE2DCCB)),
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              key,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: AppColors.ink,
+        return Material(
+          color: isBackspace ? Colors.transparent : AppColors.surface,
+          shape: const CircleBorder(),
+          child: InkWell(
+            customBorder: const CircleBorder(),
+            onTap: () => isBackspace ? onBackspace() : onDigit(key),
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isBackspace ? Colors.transparent : AppColors.line,
+                ),
+              ),
+              child: Text(
+                key,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.espresso,
+                ),
               ),
             ),
           ),

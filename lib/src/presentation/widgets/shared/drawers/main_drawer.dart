@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:waitless_mobile/src/config/app_localizations.dart';
 import 'package:waitless_mobile/src/presentation/cubits/auth/logout/logout_cubit.dart';
+import 'package:waitless_mobile/src/presentation/widgets/shared/brand_mark.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/snackbars/custom_snack_bar.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/spinners/custom_loading_indicator.dart';
 import 'package:waitless_mobile/src/services/shared_preferences_service.dart';
-import 'package:waitless_mobile/src/utils/constants/colors.dart';
+import 'package:waitless_mobile/src/utils/constants/app_colors.dart';
 import 'package:waitless_mobile/src/utils/constants/strings.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MainDrawer extends StatefulWidget {
   const MainDrawer({super.key});
@@ -18,7 +19,6 @@ class MainDrawer extends StatefulWidget {
 class _MainDrawerState extends State<MainDrawer> {
   String? email;
   late LogoutCubit _logoutCubit;
-
   bool _myUserLoading = false;
 
   @override
@@ -29,9 +29,7 @@ class _MainDrawerState extends State<MainDrawer> {
   }
 
   Future<void> _loadUserData() async {
-    setState(() {
-      _myUserLoading = true;
-    });
+    setState(() => _myUserLoading = true);
     final myUser = await SharedPreferencesService.getUser();
     setState(() {
       email = myUser.email;
@@ -43,74 +41,74 @@ class _MainDrawerState extends State<MainDrawer> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Drawer(
+      backgroundColor: AppColors.canvas,
       child: !_myUserLoading
-          ? ListView(
-              children: [
-                Column(
+          ? SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    UserAccountsDrawerHeader(
-                      accountName: const Text(
-                        '',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                    const BrandMark(compact: true),
+                    const SizedBox(height: 28),
+                    Text(
+                      l10n.staffAccess,
+                      style: const TextStyle(
+                        color: AppColors.muted,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.6,
                       ),
-                      accountEmail: Text(
-                        email ?? '',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      currentAccountPicture: CircleAvatar(
-                        radius: 25,
-                        backgroundColor: Colors.grey.shade100,
-                        child: const Icon(Icons.person, color: Color(green)),
-                      ),
-                      decoration: const BoxDecoration(color: Color(green)),
                     ),
-                    ListTile(
-                      leading: const Icon(Icons.language),
-                      title: Text(
-                        l10n.language,
-                        style: const TextStyle(fontSize: 14),
+                    const SizedBox(height: 4),
+                    Text(
+                      email ?? '',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
                       ),
+                    ),
+                    const SizedBox(height: 28),
+                    _DrawerTile(
+                      icon: Icons.language_outlined,
+                      label: l10n.language,
                       onTap: () {
                         Navigator.pop(context);
                         Navigator.pushNamed(context, routeNameLanguage);
                       },
                     ),
-                    ListTile(
-                      leading: const Icon(Icons.exit_to_app),
-                      title: Text(
-                        l10n.logout,
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                      onTap: () {
-                        _logoutCubit.logout();
-                        Navigator.pop(context); // Close the drawer
-                      },
+                    _DrawerTile(
+                      icon: Icons.logout_rounded,
+                      label: l10n.logout,
+                      onTap: () => _logoutCubit.logout(),
                     ),
-                    const Divider(color: Colors.black),
+                    const Spacer(),
                     BlocConsumer<LogoutCubit, LogoutState>(
-                      builder: (context, state) => const SizedBox(),
+                      builder: (context, state) => const SizedBox.shrink(),
                       listener: (context, state) {
                         if (state is LogoutInProgress) {
                           showDialog(
                             context: context,
-                            builder: (context) => const AlertDialog(
-                              content: CircularProgressIndicator(),
+                            builder: (context) => AlertDialog(
+                              backgroundColor: AppColors.surface,
+                              content: CustomLoadingIndicator(text: l10n.loading),
                             ),
                           );
                         } else if (state is LogoutFailure) {
-                          Navigator.pop(context); // Close the loading
+                          Navigator.pop(context);
                           showDialog(
                             context: context,
-                            builder: (context) => AlertDialog(
-                              title: Text(l10n.error),
-                              content: Text(state.errorMessage),
+                            builder: (context) => AppAlert(
+                              title: l10n.error,
+                              content: state.errorMessage,
+                              actionLabel: l10n.ok,
                             ),
                           );
                         } else if (state is LogoutSuccess) {
-                          Navigator.pop(context); // Close the loading
+                          Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             CustomSnackBar(
-                              color: Colors.green,
+                              color: AppColors.sage,
                               message: l10n.loggedOut,
                               iconData: Icons.check,
                             ),
@@ -124,9 +122,34 @@ class _MainDrawerState extends State<MainDrawer> {
                     ),
                   ],
                 ),
-              ],
+              ),
             )
           : CustomLoadingIndicator(text: l10n.loading),
+    );
+  }
+}
+
+class _DrawerTile extends StatelessWidget {
+  const _DrawerTile({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: Icon(icon, color: AppColors.espresso),
+      title: Text(
+        label,
+        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+      ),
+      onTap: onTap,
     );
   }
 }

@@ -9,6 +9,7 @@ import 'package:waitless_mobile/src/domain/entities/app_language.dart';
 import 'package:waitless_mobile/src/presentation/cubits/language/language_cubit.dart';
 import 'package:waitless_mobile/src/services/injection_container.dart' as di;
 import 'package:waitless_mobile/src/utils/constants/strings.dart';
+import 'package:waitless_mobile/src/utils/theme/app_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,6 +44,7 @@ class MainApp extends StatelessWidget {
             ],
             debugShowCheckedModeBanner: false,
             title: 'Waitless',
+            theme: AppTheme.light(),
             initialRoute:
                 isAuthenticated ? routeNamePinPage : routeNameLanguage,
             onGenerateRoute: AppRouter.generateRoute,

@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:waitless_mobile/src/config/app_localizations.dart';
 import 'package:waitless_mobile/src/presentation/blocs/auth/login/login_bloc.dart';
+import 'package:waitless_mobile/src/presentation/widgets/auth/header.dart';
+import 'package:waitless_mobile/src/presentation/widgets/shared/primary_button.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/snackbars/custom_snack_bar.dart';
 import 'package:waitless_mobile/src/utils/constants/app_colors.dart';
 import 'package:waitless_mobile/src/utils/constants/strings.dart';
@@ -46,7 +48,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(
-      backgroundColor: AppColors.paper,
+      backgroundColor: AppColors.canvas,
       body: BlocListener<LoginBloc, LoginState>(
         listener: (context, state) {
           if (state is LoggingIn) {
@@ -54,7 +56,7 @@ class _SignUpPageState extends State<SignUpPage> {
           } else if (state is LoginSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               CustomSnackBar(
-                color: Colors.green,
+                color: AppColors.sage,
                 message: l10n.accountCreated,
                 iconData: Icons.check,
               ),
@@ -64,35 +66,24 @@ class _SignUpPageState extends State<SignUpPage> {
             setState(() => isSigningUp = false);
             showDialog<void>(
               context: context,
-              builder: (context) => AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                title: Text(l10n.error),
-                content: Text(state.errorMessage),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(
-                      l10n.ok,
-                      style: const TextStyle(color: AppColors.ink),
-                    ),
-                  ),
-                ],
+              builder: (context) => AppAlert(
+                title: l10n.error,
+                content: state.errorMessage,
+                actionLabel: l10n.ok,
               ),
             );
           }
         },
-        child: Padding(
-          padding: const EdgeInsets.all(20),
+        child: SafeArea(
           child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 500),
+              constraints: const BoxConstraints(maxWidth: 480),
               child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(24, 36, 24, 24),
                 child: Column(
                   children: [
-                    _buildHeader(),
-                    const SizedBox(height: 35),
+                    AuthHeader(subtitle: l10n.staffAccess),
+                    const SizedBox(height: 32),
                     InternationalPhoneNumberInput(
                       onInputChanged: (value) {
                         setState(() => phoneNumber = value.phoneNumber);
@@ -106,11 +97,12 @@ class _SignUpPageState extends State<SignUpPage> {
                       ignoreBlank: false,
                       textFieldController: phoneNumberController,
                       autoValidateMode: AutovalidateMode.disabled,
-                      selectorTextStyle: const TextStyle(color: AppColors.ink),
+                      selectorTextStyle: const TextStyle(color: AppColors.espresso),
                       initialValue: number,
+                      inputDecoration: fieldDecoration(label: ''),
                       inputBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: AppColors.ink),
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: const BorderSide(color: AppColors.line),
                       ),
                       focusNode: phoneNumberFocusNode,
                     ),
@@ -122,7 +114,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       decoration: fieldDecoration(
                         label: l10n.email,
                         suffixIcon: const Icon(
-                          Icons.email_outlined,
+                          Icons.mail_outline,
                           color: AppColors.muted,
                         ),
                       ),
@@ -137,8 +129,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         suffixIcon: IconButton(
                           icon: Icon(
                             isPasswordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
                             color: AppColors.muted,
                           ),
                           onPressed: () => setState(
@@ -148,54 +140,25 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.ink,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                        ),
-                        icon: isSigningUp
-                            ? const SizedBox(
-                                height: 18,
-                                width: 18,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : const Icon(
-                                Icons.person_add_outlined,
-                                color: Colors.white,
-                              ),
-                        onPressed: isSigningUp ? null : _submit,
-                        label: Text(
-                          l10n.signUp,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
+                    PrimaryButton(
+                      label: l10n.signUp,
+                      loading: isSigningUp,
+                      onPressed: isSigningUp ? null : _submit,
                     ),
                     const SizedBox(height: 24),
                     RichText(
                       text: TextSpan(
                         text: l10n.alreadyHaveAccount,
                         style: const TextStyle(
-                          color: AppColors.ink,
+                          color: AppColors.muted,
                           fontSize: 14,
                         ),
                         children: [
                           TextSpan(
                             text: l10n.signIn,
                             style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.rust,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.espresso,
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () => Navigator.pushReplacementNamed(
@@ -216,42 +179,6 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Widget _buildHeader() {
-    return Column(
-      children: [
-        ShaderMask(
-          shaderCallback: (bounds) => const LinearGradient(
-            colors: [AppColors.ink, AppColors.teal],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ).createShader(bounds),
-          child: const Text(
-            'Waitless',
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-              letterSpacing: 1.1,
-            ),
-          ),
-        ),
-        const SizedBox(height: 20),
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppColors.ink),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: Image.asset(
-            'assets/images/auth_logo.png',
-            height: 180,
-            fit: BoxFit.cover,
-          ),
-        ),
-      ],
-    );
-  }
-
   void _submit() {
     final l10n = context.l10n;
     final email = emailController.text.trim();
@@ -263,7 +190,7 @@ class _SignUpPageState extends State<SignUpPage> {
         password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         CustomSnackBar(
-          color: Colors.red,
+          color: AppColors.clay,
           message: l10n.fillValidFields,
           iconData: Icons.close,
         ),
@@ -274,7 +201,7 @@ class _SignUpPageState extends State<SignUpPage> {
     if (!isValidEmail(email)) {
       ScaffoldMessenger.of(context).showSnackBar(
         CustomSnackBar(
-          color: Colors.red,
+          color: AppColors.clay,
           message: l10n.invalidEmail,
           iconData: Icons.close,
         ),

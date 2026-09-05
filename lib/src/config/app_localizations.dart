@@ -23,11 +23,109 @@ class AppLocalizations {
       });
 
   String get languageSubtitle => _t(const {
-        AppLanguage.en: 'You can change this later from the menu.',
-        AppLanguage.fr: 'Vous pourrez la modifier plus tard depuis le menu.',
-        AppLanguage.ar: 'يمكنك تغييرها لاحقًا من القائمة.',
-        AppLanguage.es: 'Podrás cambiarlo más tarde desde el menú.',
+        AppLanguage.en: 'For the floor team across Morocco.',
+        AppLanguage.fr: 'Pour l’équipe en salle, partout au Maroc.',
+        AppLanguage.ar: 'لفريق الخدمة في جميع أنحاء المغرب.',
+        AppLanguage.es: 'Para el equipo de sala en Marruecos.',
       });
+
+  String get staffAccess => _t(const {
+        AppLanguage.en: 'Staff access',
+        AppLanguage.fr: 'Accès équipe',
+        AppLanguage.ar: 'دخول الموظفين',
+        AppLanguage.es: 'Acceso del personal',
+      });
+
+  String get staffTagline => _t(const {
+        AppLanguage.en: 'Tables call. You answer.',
+        AppLanguage.fr: 'Les tables appellent. Vous répondez.',
+        AppLanguage.ar: 'الطاولات تنادي. وأنت تجيب.',
+        AppLanguage.es: 'Las mesas llaman. Tú respondes.',
+      });
+
+  String get venueName => _t(const {
+        AppLanguage.en: 'Café Atlas',
+        AppLanguage.fr: 'Café Atlas',
+        AppLanguage.ar: 'مقهى أطلس',
+        AppLanguage.es: 'Café Atlas',
+      });
+
+  String get floorLive => _t(const {
+        AppLanguage.en: 'Live floor',
+        AppLanguage.fr: 'Salle en direct',
+        AppLanguage.ar: 'القاعة مباشرة',
+        AppLanguage.es: 'Sala en vivo',
+      });
+
+  String waitingCount(int count) => _t({
+        AppLanguage.en: '$count waiting',
+        AppLanguage.fr: '$count en attente',
+        AppLanguage.ar: '$count في الانتظار',
+        AppLanguage.es: '$count en espera',
+      });
+
+  String get allZones => _t(const {
+        AppLanguage.en: 'All zones',
+        AppLanguage.fr: 'Toutes les zones',
+        AppLanguage.ar: 'كل المناطق',
+        AppLanguage.es: 'Todas las zonas',
+      });
+
+  String get onMyWay => _t(const {
+        AppLanguage.en: 'On my way',
+        AppLanguage.fr: 'J’arrive',
+        AppLanguage.ar: 'في الطريق',
+        AppLanguage.es: 'Voy en camino',
+      });
+
+  String get done => _t(const {
+        AppLanguage.en: 'Done',
+        AppLanguage.fr: 'Terminé',
+        AppLanguage.ar: 'تم',
+        AppLanguage.es: 'Listo',
+      });
+
+  String get pinUnlock => _t(const {
+        AppLanguage.en: 'Unlock the floor',
+        AppLanguage.fr: 'Déverrouiller la salle',
+        AppLanguage.ar: 'فتح القاعة',
+        AppLanguage.es: 'Desbloquear la sala',
+      });
+
+  String zoneName(String zone) {
+    switch (zone) {
+      case 'terrace':
+        return _t(const {
+          AppLanguage.en: 'Terrace',
+          AppLanguage.fr: 'Terrasse',
+          AppLanguage.ar: 'الشرفة',
+          AppLanguage.es: 'Terraza',
+        });
+      case 'salon':
+        return _t(const {
+          AppLanguage.en: 'Salon',
+          AppLanguage.fr: 'Salon',
+          AppLanguage.ar: 'الصالون',
+          AppLanguage.es: 'Salón',
+        });
+      case 'patio':
+        return _t(const {
+          AppLanguage.en: 'Patio',
+          AppLanguage.fr: 'Patio',
+          AppLanguage.ar: 'الفناء',
+          AppLanguage.es: 'Patio',
+        });
+      case 'lounge':
+        return _t(const {
+          AppLanguage.en: 'Lounge',
+          AppLanguage.fr: 'Lounge',
+          AppLanguage.ar: 'اللاونج',
+          AppLanguage.es: 'Lounge',
+        });
+      default:
+        return zone;
+    }
+  }
 
   String get continueLabel => _t(const {
         AppLanguage.en: 'Continue',
@@ -180,9 +278,9 @@ class AppLocalizations {
       });
 
   String get enterPin => _t(const {
-        AppLanguage.en: 'Enter your 4-digit PIN',
+        AppLanguage.en: 'Enter your 4-digit staff PIN',
         AppLanguage.fr: 'Entrez votre code PIN à 4 chiffres',
-        AppLanguage.ar: 'أدخل رمز PIN المكون من 4 أرقام',
+        AppLanguage.ar: 'أدخل رمز PIN للموظفين',
         AppLanguage.es: 'Introduce tu PIN de 4 dígitos',
       });
 
@@ -201,26 +299,33 @@ class AppLocalizations {
       });
 
   String get activeRequests => _t(const {
-        AppLanguage.en: 'Active requests',
-        AppLanguage.fr: 'Demandes actives',
-        AppLanguage.ar: 'الطلبات النشطة',
-        AppLanguage.es: 'Solicitudes activas',
+        AppLanguage.en: 'Floor calls',
+        AppLanguage.fr: 'Appels en salle',
+        AppLanguage.ar: 'نداءات القاعة',
+        AppLanguage.es: 'Llamadas de sala',
       });
 
   String get allCaughtUp => _t(const {
-        AppLanguage.en: 'All caught up',
-        AppLanguage.fr: 'Tout est à jour',
-        AppLanguage.ar: 'لا توجد طلبات',
-        AppLanguage.es: 'Todo al día',
+        AppLanguage.en: 'The floor is calm',
+        AppLanguage.fr: 'La salle est calme',
+        AppLanguage.ar: 'القاعة هادئة',
+        AppLanguage.es: 'La sala está tranquila',
       });
 
   String get emptyQueueHint => _t(const {
-        AppLanguage.en: 'New requests from tables will appear here instantly.',
+        AppLanguage.en: 'When a guest scans the table QR, the call appears here.',
         AppLanguage.fr:
-            'Les nouvelles demandes des tables apparaîtront ici instantanément.',
-        AppLanguage.ar: 'ستظهر هنا طلبات الطاولات الجديدة فورًا.',
+            'Quand un client scanne le QR de la table, l’appel apparaît ici.',
+        AppLanguage.ar: 'عندما يمسح الضيف رمز الطاولة، يظهر النداء هنا.',
         AppLanguage.es:
-            'Las nuevas solicitudes de las mesas aparecerán aquí al instante.',
+            'Cuando un cliente escanea el QR de la mesa, la llamada aparece aquí.',
+      });
+
+  String get tableLabel => _t(const {
+        AppLanguage.en: 'Table',
+        AppLanguage.fr: 'Table',
+        AppLanguage.ar: 'طاولة',
+        AppLanguage.es: 'Mesa',
       });
 
   String table(int number) => _t({
@@ -273,17 +378,17 @@ class AppLocalizations {
       });
 
   String get acknowledge => _t(const {
-        AppLanguage.en: 'Acknowledge',
-        AppLanguage.fr: 'Accuser réception',
-        AppLanguage.ar: 'تأكيد الاستلام',
-        AppLanguage.es: 'Reconocer',
+        AppLanguage.en: 'On my way',
+        AppLanguage.fr: 'J’arrive',
+        AppLanguage.ar: 'في الطريق',
+        AppLanguage.es: 'Voy en camino',
       });
 
   String get resolve => _t(const {
-        AppLanguage.en: 'Resolve',
-        AppLanguage.fr: 'Résoudre',
-        AppLanguage.ar: 'إنهاء',
-        AppLanguage.es: 'Resolver',
+        AppLanguage.en: 'Done',
+        AppLanguage.fr: 'Terminé',
+        AppLanguage.ar: 'تم',
+        AppLanguage.es: 'Listo',
       });
 
   String get logout => _t(const {

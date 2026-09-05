@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:waitless_mobile/src/config/app_localizations.dart';
 import 'package:waitless_mobile/src/presentation/blocs/auth/login/login_bloc.dart';
 import 'package:waitless_mobile/src/presentation/widgets/auth/header.dart';
+import 'package:waitless_mobile/src/presentation/widgets/shared/primary_button.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/snackbars/custom_snack_bar.dart';
 import 'package:waitless_mobile/src/utils/constants/app_colors.dart';
 import 'package:waitless_mobile/src/utils/constants/strings.dart';
@@ -37,29 +38,28 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(
-      backgroundColor: AppColors.paper,
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
+      backgroundColor: AppColors.canvas,
+      body: SafeArea(
         child: Center(
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 500),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 480),
             child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(24, 36, 24, 24),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  buildHeader(),
-                  const SizedBox(height: 35),
+                  AuthHeader(subtitle: '${l10n.staffAccess} · ${l10n.staffTagline}'),
+                  const SizedBox(height: 36),
                   TextField(
                     decoration: fieldDecoration(
                       label: l10n.email,
                       suffixIcon: const Icon(
-                        Icons.email_outlined,
+                        Icons.mail_outline,
                         color: AppColors.muted,
                       ),
                     ),
                     controller: emailController,
                     focusNode: emailFocusNode,
+                    keyboardType: TextInputType.emailAddress,
                   ),
                   const SizedBox(height: 12),
                   TextField(
@@ -69,8 +69,8 @@ class _LoginPageState extends State<LoginPage> {
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isPasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
                           color: AppColors.muted,
                         ),
                         onPressed: () {
@@ -83,92 +83,58 @@ class _LoginPageState extends State<LoginPage> {
                     controller: passwordController,
                     focusNode: passwordFocusNode,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              routeNameAuthForgotPassword,
-                            );
-                          },
-                          child: Text(
-                            l10n.forgotPassword,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: AppColors.rust,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.ink,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      ),
-                      icon: _isLoggingIn
-                          ? const SizedBox(
-                              height: 18,
-                              width: 18,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : const Icon(Icons.login, color: Colors.white),
+                  Align(
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: TextButton(
                       onPressed: () {
-                        if (emailController.text.isNotEmpty &&
-                            passwordController.text.isNotEmpty) {
-                          final email = emailController.text.trim();
-                          _signIn(email, passwordController.text);
-                          emailFocusNode.unfocus();
-                          passwordFocusNode.unfocus();
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            CustomSnackBar(
-                              color: Colors.red,
-                              message: l10n.enterCredentials,
-                              iconData: Icons.close,
-                            ),
-                          );
-                        }
+                        Navigator.pushNamed(context, routeNameAuthForgotPassword);
                       },
-                      label: Text(
-                        l10n.signIn,
+                      child: Text(
+                        l10n.forgotPassword,
                         style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
+                          color: AppColors.clay,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
+                  ),
+                  PrimaryButton(
+                    label: l10n.signIn,
+                    loading: _isLoggingIn,
+                    onPressed: () {
+                      if (emailController.text.isNotEmpty &&
+                          passwordController.text.isNotEmpty) {
+                        _signIn(
+                          emailController.text.trim(),
+                          passwordController.text,
+                        );
+                        emailFocusNode.unfocus();
+                        passwordFocusNode.unfocus();
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          CustomSnackBar(
+                            color: AppColors.clay,
+                            message: l10n.enterCredentials,
+                            iconData: Icons.close,
+                          ),
+                        );
+                      }
+                    },
                   ),
                   const SizedBox(height: 24),
                   RichText(
                     text: TextSpan(
                       text: l10n.noAccount,
                       style: const TextStyle(
-                        color: AppColors.ink,
+                        color: AppColors.muted,
                         fontSize: 14,
                       ),
                       children: [
                         TextSpan(
                           text: l10n.signUp,
                           style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.rust,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.espresso,
                           ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
@@ -186,7 +152,7 @@ class _LoginPageState extends State<LoginPage> {
                       if (state is LoginSuccess) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           CustomSnackBar(
-                            color: Colors.green,
+                            color: AppColors.sage,
                             message: l10n.loggedIn,
                             iconData: Icons.check,
                           ),
@@ -196,28 +162,20 @@ class _LoginPageState extends State<LoginPage> {
                           routeNamePinPage,
                         );
                       } else if (state is LoginFailure) {
-                        setState(() {
-                          _isLoggingIn = false;
-                        });
+                        setState(() => _isLoggingIn = false);
                         showDialog(
                           context: context,
-                          builder: (context) => AlertDialog(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            title: Text(l10n.error),
-                            content: Text(state.errorMessage),
+                          builder: (context) => AppAlert(
+                            title: l10n.error,
+                            content: state.errorMessage,
+                            actionLabel: l10n.ok,
                           ),
                         );
                       } else if (state is LoggingIn) {
-                        setState(() {
-                          _isLoggingIn = true;
-                        });
+                        setState(() => _isLoggingIn = true);
                       }
                     },
-                    builder: (context, state) {
-                      return const SizedBox.shrink();
-                    },
+                    builder: (context, state) => const SizedBox.shrink(),
                   ),
                 ],
               ),

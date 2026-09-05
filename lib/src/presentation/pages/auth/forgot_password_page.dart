@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:waitless_mobile/src/config/app_localizations.dart';
 import 'package:waitless_mobile/src/presentation/cubits/auth/forgot_password/forgot_password_cubit.dart';
+import 'package:waitless_mobile/src/presentation/widgets/shared/primary_button.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/snackbars/custom_snack_bar.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/spinners/custom_loading_indicator.dart';
 import 'package:waitless_mobile/src/utils/constants/app_colors.dart';
@@ -36,59 +37,32 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(
-      backgroundColor: AppColors.paper,
-      appBar: AppBar(
-        backgroundColor: AppColors.paper,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: AppColors.ink),
-        title: Text(
-          l10n.forgotPasswordTitle,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: AppColors.ink,
-          ),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
+      backgroundColor: AppColors.canvas,
+      appBar: AppBar(title: Text(l10n.forgotPasswordTitle)),
+      body: SafeArea(
         child: Center(
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 500),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 480),
             child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.ink),
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    constraints: const BoxConstraints(maxHeight: 200),
-                    child: Image.asset(
-                      'assets/images/auth_logo.png',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 24),
                   Text(
                     l10n.forgotPasswordHint,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      fontSize: 15,
-                      color: AppColors.ink,
-                      fontWeight: FontWeight.w600,
-                      height: 1.4,
+                      fontSize: 16,
+                      color: AppColors.muted,
+                      height: 1.45,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 28),
                   TextField(
                     decoration: fieldDecoration(
                       label: l10n.email,
                       suffixIcon: const Icon(
-                        Icons.email_outlined,
+                        Icons.mail_outline,
                         color: AppColors.muted,
                       ),
                     ),
@@ -96,40 +70,22 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     focusNode: emailFocusNode,
                   ),
                   const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.ink,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      ),
-                      onPressed: () {
-                        if (emailController.text.isNotEmpty) {
-                          final email = emailController.text.trim();
-                          _forgotPassword(email);
-                          emailFocusNode.unfocus();
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            CustomSnackBar(
-                              color: Colors.red,
-                              message: l10n.enterEmail,
-                              iconData: Icons.close,
-                            ),
-                          );
-                        }
-                      },
-                      child: Text(
-                        l10n.submit,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
+                  PrimaryButton(
+                    label: l10n.submit,
+                    onPressed: () {
+                      if (emailController.text.isNotEmpty) {
+                        _forgotPassword(emailController.text.trim());
+                        emailFocusNode.unfocus();
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          CustomSnackBar(
+                            color: AppColors.clay,
+                            message: l10n.enterEmail,
+                            iconData: Icons.close,
+                          ),
+                        );
+                      }
+                    },
                   ),
                   BlocConsumer<ForgotPasswordCubit, ForgotPasswordState>(
                     listener: (context, state) {
@@ -138,7 +94,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
                           CustomSnackBar(
-                            color: Colors.green,
+                            color: AppColors.sage,
                             message: l10n.checkEmail,
                             iconData: Icons.check,
                           ),
@@ -149,34 +105,26 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         }
                         showDialog(
                           context: context,
-                          builder: (context) => AlertDialog(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            title: Text(l10n.error),
-                            content: Text(state.errorMessage),
+                          builder: (context) => AppAlert(
+                            title: l10n.error,
+                            content: state.errorMessage,
+                            actionLabel: l10n.ok,
                           ),
                         );
                       } else if (state is SendingEmail) {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
+                            backgroundColor: AppColors.surface,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(20),
                             ),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                CustomLoadingIndicator(text: l10n.loading),
-                              ],
-                            ),
+                            content: CustomLoadingIndicator(text: l10n.loading),
                           ),
                         );
                       }
                     },
-                    builder: (BuildContext context, ForgotPasswordState state) {
-                      return const SizedBox.shrink();
-                    },
+                    builder: (context, state) => const SizedBox.shrink(),
                   ),
                 ],
               ),
