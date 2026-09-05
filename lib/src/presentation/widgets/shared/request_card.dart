@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waitless_mobile/src/config/app_localizations.dart';
 import 'package:waitless_mobile/src/domain/entities/request_status.dart';
 import 'package:waitless_mobile/src/domain/entities/request_type.dart';
 import 'package:waitless_mobile/src/domain/entities/service_request.dart';
@@ -27,21 +28,24 @@ class RequestCard extends StatelessWidget {
     }
   }
 
-  String get _typeLabel {
-    if (request.type == RequestType.callWaiter) return 'Call waiter';
+  String _typeLabel(AppLocalizations l10n) {
+    if (request.type == RequestType.callWaiter) return l10n.callWaiter;
     final method = request.paymentMethod;
-    return method != null ? 'Requesting the bill · $method' : 'Requesting the bill';
+    return method != null
+        ? l10n.requestingBillWithMethod(method)
+        : l10n.requestingBill;
   }
 
-  String get _timeLabel {
+  String _timeLabel(AppLocalizations l10n) {
     final diff = DateTime.now().difference(request.createdAt);
-    if (diff.inSeconds < 60) return 'just now';
-    if (diff.inMinutes < 60) return '${diff.inMinutes} min ago';
-    return '${diff.inHours} hr ago';
+    if (diff.inSeconds < 60) return l10n.justNow;
+    if (diff.inMinutes < 60) return l10n.minutesAgo(diff.inMinutes);
+    return l10n.hoursAgo(diff.inHours);
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -57,7 +61,7 @@ class RequestCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Table ${request.tableNumber}',
+                l10n.table(request.tableNumber),
                 style: const TextStyle(
                   color: AppColors.paper,
                   fontWeight: FontWeight.w600,
@@ -65,14 +69,14 @@ class RequestCard extends StatelessWidget {
                 ),
               ),
               Text(
-                _timeLabel,
+                _timeLabel(l10n),
                 style: const TextStyle(color: Color(0xFF6B6858), fontSize: 10.5),
               ),
             ],
           ),
           const SizedBox(height: 4),
           Text(
-            _typeLabel,
+            _typeLabel(l10n),
             style: const TextStyle(color: Color(0xFFCFCABB), fontSize: 12),
           ),
           const SizedBox(height: 8),
@@ -83,7 +87,7 @@ class RequestCard extends StatelessWidget {
               if (request.status == RequestStatus.open)
                 Expanded(
                   child: _ActionButton(
-                    label: 'Acknowledge',
+                    label: l10n.acknowledge,
                     background: const Color(0xFF2A2B27),
                     textColor: AppColors.paper,
                     onTap: onAcknowledge,
@@ -92,7 +96,7 @@ class RequestCard extends StatelessWidget {
               if (request.status == RequestStatus.open) const SizedBox(width: 6),
               Expanded(
                 child: _ActionButton(
-                  label: 'Resolve',
+                  label: l10n.resolve,
                   background: AppColors.teal,
                   textColor: const Color(0xFF0D1F1A),
                   onTap: onResolve,

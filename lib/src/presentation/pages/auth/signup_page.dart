@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:waitless_mobile/src/config/app_localizations.dart';
 import 'package:waitless_mobile/src/presentation/blocs/auth/login/login_bloc.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/snackbars/custom_snack_bar.dart';
 import 'package:waitless_mobile/src/utils/constants/app_colors.dart';
@@ -43,6 +44,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       backgroundColor: AppColors.paper,
       body: BlocListener<LoginBloc, LoginState>(
@@ -53,7 +55,7 @@ class _SignUpPageState extends State<SignUpPage> {
             ScaffoldMessenger.of(context).showSnackBar(
               CustomSnackBar(
                 color: Colors.green,
-                message: 'Félicitations, votre compte a été créé avec succès',
+                message: l10n.accountCreated,
                 iconData: Icons.check,
               ),
             );
@@ -66,14 +68,14 @@ class _SignUpPageState extends State<SignUpPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
-                title: const Text('Erreur'),
+                title: Text(l10n.error),
                 content: Text(state.errorMessage),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text(
-                      'OK',
-                      style: TextStyle(color: AppColors.ink),
+                    child: Text(
+                      l10n.ok,
+                      style: const TextStyle(color: AppColors.ink),
                     ),
                   ),
                 ],
@@ -118,7 +120,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       focusNode: emailFocusNode,
                       keyboardType: TextInputType.emailAddress,
                       decoration: fieldDecoration(
-                        label: 'Email',
+                        label: l10n.email,
                         suffixIcon: const Icon(
                           Icons.email_outlined,
                           color: AppColors.muted,
@@ -131,7 +133,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       focusNode: passwordFocusNode,
                       obscureText: !isPasswordVisible,
                       decoration: fieldDecoration(
-                        label: 'Mot de passe',
+                        label: l10n.password,
                         suffixIcon: IconButton(
                           icon: Icon(
                             isPasswordVisible
@@ -170,9 +172,9 @@ class _SignUpPageState extends State<SignUpPage> {
                                 color: Colors.white,
                               ),
                         onPressed: isSigningUp ? null : _submit,
-                        label: const Text(
-                          "S'inscrire",
-                          style: TextStyle(
+                        label: Text(
+                          l10n.signUp,
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -183,14 +185,14 @@ class _SignUpPageState extends State<SignUpPage> {
                     const SizedBox(height: 24),
                     RichText(
                       text: TextSpan(
-                        text: 'Vous avez déjà un compte ? ',
+                        text: l10n.alreadyHaveAccount,
                         style: const TextStyle(
                           color: AppColors.ink,
                           fontSize: 14,
                         ),
                         children: [
                           TextSpan(
-                            text: 'Se connecter',
+                            text: l10n.signIn,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               color: AppColors.rust,
@@ -251,6 +253,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void _submit() {
+    final l10n = context.l10n;
     final email = emailController.text.trim();
     final password = passwordController.text;
 
@@ -261,8 +264,7 @@ class _SignUpPageState extends State<SignUpPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         CustomSnackBar(
           color: Colors.red,
-          message:
-              'Veuillez saisir un numéro, un email et un mot de passe valides',
+          message: l10n.fillValidFields,
           iconData: Icons.close,
         ),
       );
@@ -273,7 +275,7 @@ class _SignUpPageState extends State<SignUpPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         CustomSnackBar(
           color: Colors.red,
-          message: 'Veuillez saisir une adresse email valide',
+          message: l10n.invalidEmail,
           iconData: Icons.close,
         ),
       );

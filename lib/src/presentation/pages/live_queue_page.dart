@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:waitless_mobile/src/config/app_localizations.dart';
 import 'package:waitless_mobile/src/data/repositories_impl/mock_request_repository_impl.dart';
 import 'package:waitless_mobile/src/domain/usecases/request_usecases.dart';
 import 'package:waitless_mobile/src/presentation/cubits/auth/logout/logout_cubit.dart';
@@ -41,6 +42,7 @@ class _LiveQueueView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       backgroundColor: AppColors.charcoal,
       drawer: const MainDrawer(),
@@ -57,7 +59,7 @@ class _LiveQueueView extends StatelessWidget {
                     builder: (context) => IconButton(
                       onPressed: () => Scaffold.of(context).openDrawer(),
                       icon: const Icon(Icons.menu, color: AppColors.paper),
-                      tooltip: 'Open menu',
+                      tooltip: l10n.openMenu,
                       padding: EdgeInsets.zero,
                       alignment: Alignment.centerLeft,
                     ),
@@ -75,9 +77,9 @@ class _LiveQueueView extends StatelessWidget {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'Active requests',
-                        style: TextStyle(
+                      Text(
+                        l10n.activeRequests,
+                        style: const TextStyle(
                           color: AppColors.paper,
                           fontSize: 18,
                           fontWeight: FontWeight.w600,

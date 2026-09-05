@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:waitless_mobile/src/config/app_localizations.dart';
 import 'package:waitless_mobile/src/presentation/cubits/auth/forgot_password/forgot_password_cubit.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/snackbars/custom_snack_bar.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/spinners/custom_loading_indicator.dart';
@@ -33,15 +34,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       backgroundColor: AppColors.paper,
       appBar: AppBar(
         backgroundColor: AppColors.paper,
         elevation: 0,
         iconTheme: const IconThemeData(color: AppColors.ink),
-        title: const Text(
-          "Mot de passe oublié",
-          style: TextStyle(
+        title: Text(
+          l10n.forgotPasswordTitle,
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
             color: AppColors.ink,
@@ -71,10 +73,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     ),
                   ),
                   const SizedBox(height: 40),
-                  const Text(
-                    'S\'il vous plaît, entrez votre email pour réinitialiser votre mot de passe',
+                  Text(
+                    l10n.forgotPasswordHint,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 15,
                       color: AppColors.ink,
                       fontWeight: FontWeight.w600,
@@ -84,7 +86,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   const SizedBox(height: 20),
                   TextField(
                     decoration: fieldDecoration(
-                      label: 'Email',
+                      label: l10n.email,
                       suffixIcon: const Icon(
                         Icons.email_outlined,
                         color: AppColors.muted,
@@ -113,15 +115,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             CustomSnackBar(
                               color: Colors.red,
-                              message: 'Veuillez entrer un email',
+                              message: l10n.enterEmail,
                               iconData: Icons.close,
                             ),
                           );
                         }
                       },
-                      child: const Text(
-                        'Soumettre',
-                        style: TextStyle(
+                      child: Text(
+                        l10n.submit,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -137,7 +139,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           CustomSnackBar(
                             color: Colors.green,
-                            message: 'Veuillez vérifier votre email',
+                            message: l10n.checkEmail,
                             iconData: Icons.check,
                           ),
                         );
@@ -151,7 +153,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
-                            title: const Text('Erreur'),
+                            title: Text(l10n.error),
                             content: Text(state.errorMessage),
                           ),
                         );
@@ -162,10 +164,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
-                            content: const Column(
+                            content: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                CustomLoadingIndicator(text: "loading....."),
+                                CustomLoadingIndicator(text: l10n.loading),
                               ],
                             ),
                           ),

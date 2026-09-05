@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waitless_mobile/src/config/app_localizations.dart';
 import 'package:waitless_mobile/src/presentation/cubits/auth/logout/logout_cubit.dart';
 import 'package:waitless_mobile/src/utils/constants/colors.dart';
 
@@ -19,6 +20,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return AppBar(
       leadingWidth: 150,
       leading: Padding(
@@ -75,13 +77,13 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                title: const Text(
-                  'Déconnexion',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                title: Text(
+                  l10n.logoutTitle,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                content: const Text(
-                  'Êtes-vous sûr de vouloir vous déconnecter ?',
-                  style: TextStyle(fontSize: 16),
+                content: Text(
+                  l10n.logoutConfirm,
+                  style: const TextStyle(fontSize: 16),
                 ),
                 actions: [
                   TextButton(
@@ -89,7 +91,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.grey,
                     ),
-                    child: const Text('Annuler'),
+                    child: Text(l10n.cancel),
                   ),
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context, true),
@@ -101,7 +103,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: const Text('Oui'),
+                    child: Text(l10n.yes),
                   ),
                 ],
               ),

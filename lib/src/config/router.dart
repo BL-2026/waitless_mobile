@@ -10,6 +10,7 @@ import 'package:waitless_mobile/src/presentation/cubits/auth/forgot_password/for
 import 'package:waitless_mobile/src/presentation/cubits/auth/logout/logout_cubit.dart';
 import 'package:waitless_mobile/src/presentation/pages/auth/forgot_password_page.dart';
 import 'package:waitless_mobile/src/presentation/pages/auth/login_page.dart';
+import 'package:waitless_mobile/src/presentation/pages/language_select_page.dart';
 import 'package:waitless_mobile/src/presentation/pages/pin_entry_page.dart';
 import 'package:waitless_mobile/src/services/injection_container.dart';
 import 'package:waitless_mobile/src/utils/constants/strings.dart';
@@ -17,29 +18,28 @@ import 'package:waitless_mobile/src/utils/constants/strings.dart';
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     log("route ${settings.name}");
-    if (_shouldRedirectToLogin(settings)) {
-      return _redirectToLogin();
+    if (_shouldRedirectUnauthenticated(settings)) {
+      return _redirectToLanguage();
     } else {
       return _handleValidRoute(settings);
     }
   }
 
-  static bool _shouldRedirectToLogin(RouteSettings settings) {
-    if (settings.name != routeNameAuthLogin &&
-        settings.name != routeNameAuthForgotPassword &&
-        settings.name != routeNameAuthSignUp &&
-        FirebaseAuth.instance.currentUser == null) {
-      return true;
-    }
-    return false;
+  static const _publicRoutes = {
+    routeNameAuthLogin,
+    routeNameAuthForgotPassword,
+    routeNameAuthSignUp,
+    routeNameLanguage,
+  };
+
+  static bool _shouldRedirectUnauthenticated(RouteSettings settings) {
+    return !_publicRoutes.contains(settings.name) &&
+        FirebaseAuth.instance.currentUser == null;
   }
 
-  static Route<dynamic> _redirectToLogin() {
+  static Route<dynamic> _redirectToLanguage() {
     return MaterialPageRoute(
-      builder: (_) => BlocProvider(
-        create: (context) => sl<LoginBloc>(),
-        child: LoginPage(),
-      ),
+      builder: (_) => const LanguageSelectPage(),
     );
   }
 
@@ -51,6 +51,10 @@ class AppRouter {
         return _signUpPageRoute();
       case routeNameAuthForgotPassword:
         return _forgotPasswordPageRoute();
+      case routeNameLanguage:
+        return MaterialPageRoute(
+          builder: (_) => const LanguageSelectPage(),
+        );
       case routeNamePinPage:
         return _pinEntryPageRoute();
       default:

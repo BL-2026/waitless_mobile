@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SharedPreferencesService {
   static const String _userKey = 'user';
   static const String _cartKey = 'shopping_cart';
+  static const String _languageKey = 'app_language';
 
   static Future<MyUser> getUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -52,5 +53,15 @@ class SharedPreferencesService {
   static Future<void> clearCart() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove(_cartKey);
+  }
+
+  static Future<String?> getLanguageCode() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_languageKey);
+  }
+
+  static Future<void> setLanguageCode(String code) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_languageKey, code);
   }
 }

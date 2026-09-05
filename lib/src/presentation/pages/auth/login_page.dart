@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:waitless_mobile/src/config/app_localizations.dart';
 import 'package:waitless_mobile/src/presentation/blocs/auth/login/login_bloc.dart';
 import 'package:waitless_mobile/src/presentation/widgets/auth/header.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/snackbars/custom_snack_bar.dart';
@@ -34,6 +35,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       backgroundColor: AppColors.paper,
       body: Padding(
@@ -50,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 35),
                   TextField(
                     decoration: fieldDecoration(
-                      label: 'Email',
+                      label: l10n.email,
                       suffixIcon: const Icon(
                         Icons.email_outlined,
                         color: AppColors.muted,
@@ -63,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
                   TextField(
                     obscureText: !_isPasswordVisible,
                     decoration: fieldDecoration(
-                      label: 'Mot de Passe',
+                      label: l10n.password,
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isPasswordVisible
@@ -93,9 +95,9 @@ class _LoginPageState extends State<LoginPage> {
                               routeNameAuthForgotPassword,
                             );
                           },
-                          child: const Text(
-                            'Mot de passe oublié?',
-                            style: TextStyle(
+                          child: Text(
+                            l10n.forgotPassword,
+                            style: const TextStyle(
                               fontSize: 14,
                               color: AppColors.rust,
                               fontWeight: FontWeight.w600,
@@ -137,15 +139,15 @@ class _LoginPageState extends State<LoginPage> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             CustomSnackBar(
                               color: Colors.red,
-                              message: 'Veuillez saisir vos identifiants.',
+                              message: l10n.enterCredentials,
                               iconData: Icons.close,
                             ),
                           );
                         }
                       },
-                      label: const Text(
-                        'Se connecter',
-                        style: TextStyle(
+                      label: Text(
+                        l10n.signIn,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -156,14 +158,14 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 24),
                   RichText(
                     text: TextSpan(
-                      text: "Vous n'avez pas de compte ? ",
+                      text: l10n.noAccount,
                       style: const TextStyle(
                         color: AppColors.ink,
                         fontSize: 14,
                       ),
                       children: [
                         TextSpan(
-                          text: 'S\'inscrire',
+                          text: l10n.signUp,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: AppColors.rust,
@@ -185,7 +187,7 @@ class _LoginPageState extends State<LoginPage> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           CustomSnackBar(
                             color: Colors.green,
-                            message: 'Vous êtes connecté',
+                            message: l10n.loggedIn,
                             iconData: Icons.check,
                           ),
                         );
@@ -203,7 +205,7 @@ class _LoginPageState extends State<LoginPage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
-                            title: const Text('Erreur'),
+                            title: Text(l10n.error),
                             content: Text(state.errorMessage),
                           ),
                         );

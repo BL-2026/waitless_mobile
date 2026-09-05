@@ -12,6 +12,7 @@ import 'package:waitless_mobile/src/presentation/blocs/auth/login/login_bloc.dar
 import 'package:waitless_mobile/src/presentation/cubits/auth/forgot_password/forgot_password_cubit.dart';
 import 'package:http/http.dart' as http;
 import 'package:waitless_mobile/src/presentation/cubits/auth/logout/logout_cubit.dart';
+import 'package:waitless_mobile/src/presentation/cubits/language/language_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -22,6 +23,7 @@ Future<void> init() async {
     ..registerFactory(() => LoginBloc(signIn: sl(), signUp: sl()))
     ..registerFactory(() => ForgotPasswordCubit(forgotPassword: sl()))
     ..registerFactory(() => LogoutCubit(logout: sl()))
+    ..registerLazySingleton(LanguageCubit.new)
     //Usecases
     ..registerLazySingleton(() => SignIn(sl()))
     ..registerLazySingleton(() => SignUp(sl()))

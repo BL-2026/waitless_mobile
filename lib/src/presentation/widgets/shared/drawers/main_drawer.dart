@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waitless_mobile/src/config/app_localizations.dart';
 import 'package:waitless_mobile/src/presentation/cubits/auth/logout/logout_cubit.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/snackbars/custom_snack_bar.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/spinners/custom_loading_indicator.dart';
@@ -40,6 +41,7 @@ class _MainDrawerState extends State<MainDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Drawer(
       child: !_myUserLoading
           ? ListView(
@@ -63,10 +65,21 @@ class _MainDrawerState extends State<MainDrawer> {
                       decoration: const BoxDecoration(color: Color(green)),
                     ),
                     ListTile(
+                      leading: const Icon(Icons.language),
+                      title: Text(
+                        l10n.language,
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, routeNameLanguage);
+                      },
+                    ),
+                    ListTile(
                       leading: const Icon(Icons.exit_to_app),
-                      title: const Text(
-                        'Déconnecter',
-                        style: TextStyle(fontSize: 14),
+                      title: Text(
+                        l10n.logout,
+                        style: const TextStyle(fontSize: 14),
                       ),
                       onTap: () {
                         _logoutCubit.logout();
@@ -89,7 +102,7 @@ class _MainDrawerState extends State<MainDrawer> {
                           showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
-                              title: const Text('Erreur'),
+                              title: Text(l10n.error),
                               content: Text(state.errorMessage),
                             ),
                           );
@@ -98,13 +111,13 @@ class _MainDrawerState extends State<MainDrawer> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             CustomSnackBar(
                               color: Colors.green,
-                              message: 'Vous vous êtes déconnectét',
+                              message: l10n.loggedOut,
                               iconData: Icons.check,
                             ),
                           );
                           Navigator.pushReplacementNamed(
                             context,
-                            routeNameAuthLogin,
+                            routeNameLanguage,
                           );
                         }
                       },
@@ -113,7 +126,7 @@ class _MainDrawerState extends State<MainDrawer> {
                 ),
               ],
             )
-          : const CustomLoadingIndicator(text: 'Loading...'),
+          : CustomLoadingIndicator(text: l10n.loading),
     );
   }
 }

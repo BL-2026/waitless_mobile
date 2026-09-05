@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waitless_mobile/src/config/app_localizations.dart';
 import 'package:waitless_mobile/src/utils/constants/app_colors.dart';
 
 class EmptyQueueView extends StatelessWidget {
@@ -6,6 +7,7 @@ class EmptyQueueView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -20,19 +22,19 @@ class EmptyQueueView extends StatelessWidget {
             child: const Icon(Icons.check, color: Color(0xFF6B6858), size: 22),
           ),
           const SizedBox(height: 16),
-          const Text(
-            'All caught up',
-            style: TextStyle(
+          Text(
+            l10n.allCaughtUp,
+            style: const TextStyle(
               color: AppColors.paper,
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 6),
-          const Text(
-            'New requests from tables will appear here instantly.',
+          Text(
+            l10n.emptyQueueHint,
             textAlign: TextAlign.center,
-            style: TextStyle(color: Color(0xFF6B6858), fontSize: 12),
+            style: const TextStyle(color: Color(0xFF6B6858), fontSize: 12),
           ),
         ],
       ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
+import 'package:waitless_mobile/src/config/app_localizations.dart';
 
 class MapPickerScreen extends StatefulWidget {
   final LatLng? initialLocation;
@@ -86,9 +87,10 @@ class _MapPickerScreenState extends State<MapPickerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sélectionner l\'emplacement'),
+        title: Text(l10n.selectLocation),
         actions: [
           IconButton(
             icon: const Icon(Icons.check),
@@ -143,7 +145,7 @@ class _MapPickerScreenState extends State<MapPickerScreen> {
                   child: TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
-                      hintText: 'Rechercher un lieu...',
+                      hintText: l10n.searchPlace,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 15.0),
                       border: InputBorder.none,
                       suffixIcon: IconButton(
@@ -171,7 +173,7 @@ class _MapPickerScreenState extends State<MapPickerScreen> {
                         itemBuilder: (context, index) {
                           final result = _searchResults[index];
                           return ListTile(
-                            title: Text(result['display_name'] ?? 'Unknown'),
+                            title: Text(result['display_name'] ?? l10n.unknown),
                             onTap: () {
                               final lat = double.parse(result['lat']);
                               final lon = double.parse(result['lon']);
