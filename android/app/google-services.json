@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1072139160408",
+    "project_id": "waitless-9cc7d",
+    "storage_bucket": "waitless-9cc7d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1072139160408:android:303708bbc47ddb0134b32d",
+        "android_client_info": {
+          "package_name": "com.bl2026.waitless_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoJLdQsgUElJtlHNo0caETi-dWU_0I-r4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
