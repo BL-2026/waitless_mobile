@@ -22,12 +22,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       SignUpEvent event, Emitter<LoginState> emit) async {
     emit(const LoggingIn());
 
-    Map<String, dynamic> params = {
-      'phoneNumber': event.phoneNumber,
-      'email': event.email,
-      'password': event.password
-    };
-    final response = await _signUp(params);
+    final response = await _signUp(SignUpParams(
+      fullName: event.fullName,
+      phoneArea: event.phoneArea,
+      phoneNumber: event.phoneNumber,
+      email: event.email,
+      password: event.password,
+    ));
 
     response.fold((f) => emit(LoginFailure(f.message)),
         (r) => emit(const LoginSuccess()));

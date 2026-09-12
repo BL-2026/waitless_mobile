@@ -3,6 +3,7 @@ import 'package:waitless_mobile/src/config/app_localizations.dart';
 import 'package:waitless_mobile/src/domain/entities/request_status.dart';
 import 'package:waitless_mobile/src/domain/entities/request_type.dart';
 import 'package:waitless_mobile/src/domain/entities/service_request.dart';
+import 'package:waitless_mobile/src/presentation/widgets/shared/request_labels.dart';
 import 'package:waitless_mobile/src/utils/constants/app_colors.dart';
 import 'package:waitless_mobile/src/utils/theme/app_theme.dart';
 
@@ -23,14 +24,6 @@ class RequestCard extends StatelessWidget {
     if (request.status == RequestStatus.acknowledged) return AppColors.sage;
     if (wait.inMinutes >= 3) return AppColors.clay;
     return AppColors.gold;
-  }
-
-  String _typeLabel(AppLocalizations l10n) {
-    if (request.type == RequestType.callWaiter) return l10n.callWaiter;
-    final method = request.paymentMethod;
-    return method != null
-        ? l10n.requestingBillWithMethod(method)
-        : l10n.requestingBill;
   }
 
   String _timeLabel(AppLocalizations l10n) {
@@ -66,22 +59,27 @@ class RequestCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  color: _accent.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  l10n.zoneName(request.zone).toUpperCase(),
-                  style: TextStyle(
-                    color: _accent,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 1.1,
+              // Tables with no zone assigned just don't get a badge.
+              if (request.zone != null && request.zone!.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _accent.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    l10n.zoneName(request.zone!).toUpperCase(),
+                    style: TextStyle(
+                      color: _accent,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1.1,
+                    ),
                   ),
                 ),
-              ),
               const Spacer(),
               Icon(Icons.schedule, size: 14, color: AppColors.muted),
               const SizedBox(width: 4),
@@ -95,10 +93,7 @@ class RequestCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                '${request.tableNumber}',
-                style: AppTheme.display(44),
-              ),
+              Text('${request.tableNumber}', style: AppTheme.display(44)),
               const SizedBox(width: 10),
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
@@ -121,7 +116,7 @@ class RequestCard extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            _typeLabel(l10n),
+            request.typeLabel(l10n),
             style: const TextStyle(
               color: AppColors.espresso,
               fontSize: 14,

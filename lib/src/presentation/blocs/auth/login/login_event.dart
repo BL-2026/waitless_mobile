@@ -18,14 +18,27 @@ class SignInEvent extends LoginEvent {
 }
 
 class SignUpEvent extends LoginEvent {
+  final String fullName;
+
+  /// Dial code including the plus sign, e.g. `+212`.
+  final String phoneArea;
+
+  /// National part without the dial code, e.g. `612345678`.
   final String phoneNumber;
   final String email;
   final String password;
 
   const SignUpEvent({
+    required this.fullName,
+    required this.phoneArea,
     required this.phoneNumber,
-    required this.email, 
-    required this.password});
+    required this.email,
+    required this.password,
+  });
+
+  @override
+  List<Object> get props =>
+      [fullName, phoneArea, phoneNumber, email, password];
 }
 
 class ForgotPasswordEvent extends LoginEvent {

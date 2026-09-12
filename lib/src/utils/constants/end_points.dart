@@ -1,6 +1,3 @@
-//order
-const orderEndPoint = '/api/order';
-const ordersEndPoint = '/api/orders';
-const allOrdersPaginationEndPoint = '/api/orders';
-const allOrdersEndPoint = '/api/allorders';
-const fromProductsEndPoint = '/api/order/fromproducts';
+//account
+const accountEndPoint = '/api/account';
+const currentAccountEndPoint = '/api/account/me';

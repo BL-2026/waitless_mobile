@@ -20,24 +20,33 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final fullNameController = TextEditingController();
   final phoneNumberController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final fullNameFocusNode = FocusNode();
   final phoneNumberFocusNode = FocusNode();
   final emailFocusNode = FocusNode();
   final passwordFocusNode = FocusNode();
 
   PhoneNumber number = PhoneNumber(isoCode: 'MA', dialCode: '+212');
+
+  /// Full international number as typed, e.g. `+212612345678`. The backend stores
+  /// the dial code and the national part in separate columns, so [_splitPhone]
+  /// pulls them apart before sending.
   String? phoneNumber;
+  String? dialCode;
   bool isPhoneValid = false;
   bool isPasswordVisible = false;
   bool isSigningUp = false;
 
   @override
   void dispose() {
+    fullNameController.dispose();
     phoneNumberController.dispose();
     emailController.dispose();
     passwordController.dispose();
+    fullNameFocusNode.dispose();
     phoneNumberFocusNode.dispose();
     emailFocusNode.dispose();
     passwordFocusNode.dispose();
@@ -84,9 +93,26 @@ class _SignUpPageState extends State<SignUpPage> {
                   children: [
                     AuthHeader(subtitle: l10n.staffAccess),
                     const SizedBox(height: 32),
+                    TextField(
+                      controller: fullNameController,
+                      focusNode: fullNameFocusNode,
+                      textCapitalization: TextCapitalization.words,
+                      keyboardType: TextInputType.name,
+                      decoration: fieldDecoration(
+                        label: l10n.fullName,
+                        suffixIcon: const Icon(
+                          Icons.person_outline,
+                          color: AppColors.muted,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
                     InternationalPhoneNumberInput(
                       onInputChanged: (value) {
-                        setState(() => phoneNumber = value.phoneNumber);
+                        setState(() {
+                          phoneNumber = value.phoneNumber;
+                          dialCode = value.dialCode;
+                        });
                       },
                       onInputValidated: (isValid) {
                         setState(() => isPhoneValid = isValid);
@@ -179,12 +205,22 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
+  /// `+212612345678` → `('+212', '612345678')`, matching the backend's
+  /// `phoneArea` / `phoneNumber` columns.
+  (String, String) _splitPhone() {
+    final area = dialCode ?? number.dialCode ?? '';
+    final full = phoneNumber ?? '';
+    return (area, full.startsWith(area) ? full.substring(area.length) : full);
+  }
+
   void _submit() {
     final l10n = context.l10n;
+    final fullName = fullNameController.text.trim();
     final email = emailController.text.trim();
     final password = passwordController.text;
 
-    if (phoneNumber == null ||
+    if (fullName.isEmpty ||
+        phoneNumber == null ||
         !isPhoneValid ||
         email.isEmpty ||
         password.isEmpty) {
@@ -209,9 +245,17 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
 
+    final (phoneArea, nationalNumber) = _splitPhone();
     context.read<LoginBloc>().add(
-      SignUpEvent(phoneNumber: phoneNumber!, email: email, password: password),
+      SignUpEvent(
+        fullName: fullName,
+        phoneArea: phoneArea,
+        phoneNumber: nationalNumber,
+        email: email,
+        password: password,
+      ),
     );
+    fullNameFocusNode.unfocus();
     phoneNumberFocusNode.unfocus();
     emailFocusNode.unfocus();
     passwordFocusNode.unfocus();
