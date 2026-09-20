@@ -12,6 +12,7 @@ abstract class AuthRepository {
   });
 
   ResultFuture<void> signIn(String email, String password);
+  ResultFuture<void> signInWithGoogle();
   ResultFuture<void> forgotPassword(String email);
   ResultFuture<void> logout();
 }

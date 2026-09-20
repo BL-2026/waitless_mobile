@@ -1,6 +1,8 @@
 abstract class AuthRemoteDataSource {
   Future<void> signIn(String email, String password);
 
+  Future<void> signInWithGoogle();
+
   /// Creates the Firebase identity only. The owner account itself lives in the
   /// backend — see [AccountRemoteDataSource].
   Future<void> signUp({

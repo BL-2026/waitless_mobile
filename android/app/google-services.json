@@ -12,7 +12,20 @@
           "package_name": "com.bl2026.waitless_mobile"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1072139160408-917j1u7eg88ldee0cleh0psria9go206.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bl2026.waitless_mobile",
+            "certificate_hash": "b8badee9af371059b353997815a6975d37cce043"
+          }
+        },
+        {
+          "client_id": "1072139160408-pg64knlgi99g1ae51o9u2542ep7pb5vf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBoJLdQsgUElJtlHNo0caETi-dWU_0I-r4"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1072139160408-pg64knlgi99g1ae51o9u2542ep7pb5vf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1072139160408-o42ln2e769bf0gprm5l6qn8a24olf05m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.bl2026.waitlessMobile"
+              }
+            }
+          ]
         }
       }
     }

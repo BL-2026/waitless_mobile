@@ -4,6 +4,7 @@ import 'package:waitless_mobile/src/data/sources/network/auth/auth_remote_data_s
 import 'package:waitless_mobile/src/domain/entities/account.dart';
 import 'package:waitless_mobile/src/domain/repositories/auth_repository.dart';
 import 'package:waitless_mobile/src/exceptions/failure.dart';
+import 'package:waitless_mobile/src/exceptions/sign_in_cancelled.dart';
 import 'package:waitless_mobile/src/exceptions/user_not_found.dart';
 import 'package:waitless_mobile/src/services/staff_session.dart';
 import 'package:waitless_mobile/src/utils/typedef.dart';
@@ -68,6 +69,21 @@ class AuthRepositoryImpl implements AuthRepository {
       await _accountDataSource.createAccount(const CreateAccountRequest());
 
       return const Right(null);
+    } on UserNotFound catch (e) {
+      return Left(ApiFailure(message: e.message, statusCode: e.statusCode));
+    } on ApiFailure catch (e) {
+      return Left(ApiFailure(message: e.message, statusCode: e.statusCode));
+    }
+  }
+
+  @override
+  ResultFuture<void> signInWithGoogle() async {
+    try {
+      await _dataSource.signInWithGoogle();
+      await _accountDataSource.createAccount(const CreateAccountRequest());
+      return const Right(null);
+    } on SignInCancelled catch (e) {
+      return Left(ApiFailure(message: e.message, statusCode: e.statusCode));
     } on UserNotFound catch (e) {
       return Left(ApiFailure(message: e.message, statusCode: e.statusCode));
     } on ApiFailure catch (e) {
