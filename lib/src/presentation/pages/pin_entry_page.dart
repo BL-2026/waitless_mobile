@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:waitless_mobile/src/config/app_localizations.dart';
 import 'package:waitless_mobile/src/data/sources/network/staff/staff_remote_data_source.dart';
 import 'package:waitless_mobile/src/data/sources/network/store/store_remote_data_source.dart';
-import 'package:waitless_mobile/src/domain/entities/staff_member.dart';
 import 'package:waitless_mobile/src/exceptions/failure.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/brand_mark.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/pin_pad.dart';
@@ -24,13 +23,12 @@ class PinEntryPage extends StatefulWidget {
 class _PinEntryPageState extends State<PinEntryPage> {
   final _session = sl<StaffSession>();
 
-  List<StaffMember> _staff = const [];
-  StaffMember? _selected;
   String _enteredPin = '';
   bool _loading = true;
   bool _verifying = false;
-  bool _showError = false;
+  bool _hasStaff = false;
   String? _loadError;
+  String? _pinError;
 
   @override
   void initState() {
@@ -38,7 +36,6 @@ class _PinEntryPageState extends State<PinEntryPage> {
     _load();
   }
 
-  /// Resolves the venue this device belongs to, then who can unlock it.
   Future<void> _load() async {
     setState(() {
       _loading = true;
@@ -64,8 +61,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
       final staff = await sl<StaffRemoteDataSource>().listStaff(stores.first.id);
       if (!mounted) return;
       setState(() {
-        _staff = staff;
-        _selected = staff.length == 1 ? staff.first : null;
+        _hasStaff = staff.isNotEmpty;
         _loading = false;
         _loadError = staff.isEmpty ? context.l10n.noStaffYet : null;
       });
@@ -79,11 +75,11 @@ class _PinEntryPageState extends State<PinEntryPage> {
   }
 
   void _onDigit(String digit) {
-    if (_enteredPin.length >= 4 || _verifying || _selected == null) return;
+    if (_enteredPin.length >= 4 || _verifying) return;
 
     setState(() {
       _enteredPin += digit;
-      _showError = false;
+      _pinError = null;
     });
 
     if (_enteredPin.length == 4) {
@@ -92,28 +88,24 @@ class _PinEntryPageState extends State<PinEntryPage> {
   }
 
   void _onBackspace() {
-    if (_enteredPin.isEmpty) return;
+    if (_enteredPin.isEmpty || _verifying) return;
     setState(() {
       _enteredPin = _enteredPin.substring(0, _enteredPin.length - 1);
+      _pinError = null;
     });
   }
 
   Future<void> _checkPin() async {
-    final staff = _selected;
-    if (staff == null) return;
-
     setState(() => _verifying = true);
     try {
-      // The PIN never leaves the server as plaintext beyond this call; it is
-      // compared against a bcrypt hash there, not here.
-      final verified =
-          await sl<StaffRemoteDataSource>().verifyPin(staff.id, _enteredPin);
+      final verified = await sl<StaffRemoteDataSource>()
+          .verifyPin(_session.requireStoreId(), _enteredPin);
 
       if (!mounted) return;
       if (verified == null) {
         setState(() {
           _verifying = false;
-          _showError = true;
+          _pinError = context.l10n.incorrectPin;
           _enteredPin = '';
         });
         return;
@@ -130,9 +122,8 @@ class _PinEntryPageState extends State<PinEntryPage> {
       if (!mounted) return;
       setState(() {
         _verifying = false;
-        _showError = true;
+        _pinError = e.message;
         _enteredPin = '';
-        _loadError = e.message;
       });
     }
   }
@@ -147,8 +138,9 @@ class _PinEntryPageState extends State<PinEntryPage> {
           padding: const EdgeInsets.symmetric(horizontal: 32),
           child: _loading
               ? CustomLoadingIndicator(text: l10n.loading)
-              : _loadError != null && _staff.isEmpty
-                  ? _ErrorView(message: _loadError!, onRetry: _load)
+              : !_hasStaff
+                  ? _ErrorView(
+                      message: _loadError ?? l10n.noStaffYet, onRetry: _load)
                   : _buildPinEntry(l10n),
         ),
       ),
@@ -156,41 +148,28 @@ class _PinEntryPageState extends State<PinEntryPage> {
   }
 
   Widget _buildPinEntry(AppLocalizations l10n) {
+    final hasError = _pinError != null;
     return Column(
       children: [
         const SizedBox(height: 28),
         const BrandMark(compact: true),
         const Spacer(),
         Text(_session.storeName ?? l10n.pinUnlock, style: AppTheme.display(28)),
-        const SizedBox(height: 16),
-        _StaffPicker(
-          staff: _staff,
-          selected: _selected,
-          label: l10n.chooseStaff,
-          onSelect: (member) => setState(() {
-            _selected = member;
-            _enteredPin = '';
-            _showError = false;
-          }),
-        ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 12),
         Text(
-          _showError
-              ? (_loadError ?? l10n.incorrectPin)
-              : _selected == null
-                  ? l10n.chooseStaff
-                  : l10n.enterPin,
+          hasError ? _pinError! : l10n.enterPin,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 14,
-            color: _showError ? AppColors.clay : AppColors.muted,
+            color: hasError ? AppColors.clay : AppColors.muted,
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 24),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(4, (i) {
             final filled = i < _enteredPin.length;
+            final accent = hasError ? AppColors.clay : AppColors.espresso;
             return AnimatedContainer(
               duration: const Duration(milliseconds: 120),
               margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -198,66 +177,19 @@ class _PinEntryPageState extends State<PinEntryPage> {
               height: 14,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: filled ? AppColors.espresso : Colors.transparent,
-                border: Border.all(color: AppColors.espresso, width: 1.5),
+                color: filled ? accent : Colors.transparent,
+                border: Border.all(color: accent, width: 1.5),
               ),
             );
           }),
         ),
         const SizedBox(height: 24),
         Opacity(
-          opacity: _selected == null ? 0.4 : 1,
+          opacity: _verifying ? 0.4 : 1,
           child: PinPad(onDigit: _onDigit, onBackspace: _onBackspace),
         ),
         const Spacer(),
       ],
-    );
-  }
-}
-
-class _StaffPicker extends StatelessWidget {
-  const _StaffPicker({
-    required this.staff,
-    required this.selected,
-    required this.label,
-    required this.onSelect,
-  });
-
-  final List<StaffMember> staff;
-  final StaffMember? selected;
-  final String label;
-  final ValueChanged<StaffMember> onSelect;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 40,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: staff.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 8),
-        itemBuilder: (context, index) {
-          final member = staff[index];
-          final isSelected = member.id == selected?.id;
-          return ChoiceChip(
-            label: Text(member.fullName),
-            selected: isSelected,
-            onSelected: (_) => onSelect(member),
-            showCheckmark: false,
-            selectedColor: AppColors.espresso,
-            backgroundColor: AppColors.surface,
-            labelStyle: TextStyle(
-              color: isSelected ? Colors.white : AppColors.espresso,
-              fontWeight: FontWeight.w600,
-              fontSize: 13,
-            ),
-            side: BorderSide(
-                color: isSelected ? AppColors.espresso : AppColors.line),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20)),
-          );
-        },
-      ),
     );
   }
 }

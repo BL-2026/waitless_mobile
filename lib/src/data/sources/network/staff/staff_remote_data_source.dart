@@ -4,9 +4,7 @@ import 'package:waitless_mobile/src/domain/entities/staff_member.dart';
 abstract class StaffRemoteDataSource {
   Future<List<StaffMember>> listStaff(String storeId);
 
-  /// Returns the staff member when the PIN matches, null otherwise.
-  /// The comparison happens server-side against a bcrypt hash.
-  Future<StaffMember?> verifyPin(String staffId, String pin);
+  Future<StaffMember?> verifyPin(String storeId, String pin);
 }
 
 class StaffApiRemoteDataSourceImpl implements StaffRemoteDataSource {
@@ -23,9 +21,10 @@ class StaffApiRemoteDataSourceImpl implements StaffRemoteDataSource {
   }
 
   @override
-  Future<StaffMember?> verifyPin(String staffId, String pin) async {
-    final body = await _client.post('/api/staff/$staffId/verify-pin', {'pin': pin})
-        as Map<String, dynamic>;
+  Future<StaffMember?> verifyPin(String storeId, String pin) async {
+    final body =
+        await _client.post('/api/stores/$storeId/verify-pin', {'pin': pin})
+            as Map<String, dynamic>;
 
     if (body['valid'] != true) return null;
     return StaffMember(

@@ -31,6 +31,11 @@ class StaffSession {
     return id;
   }
 
+  void endShift() {
+    staffId = null;
+    staffName = null;
+  }
+
   void clear() {
     storeId = null;
     storeName = null;

@@ -463,6 +463,13 @@ class AppLocalizations {
     AppLanguage.es: 'Listo',
   });
 
+  String get endShift => _t(const {
+    AppLanguage.en: 'End shift',
+    AppLanguage.fr: 'Terminer le service',
+    AppLanguage.ar: 'إنهاء الخدمة',
+    AppLanguage.es: 'Terminar turno',
+  });
+
   String get logout => _t(const {
     AppLanguage.en: 'Log out',
     AppLanguage.fr: 'Déconnecter',

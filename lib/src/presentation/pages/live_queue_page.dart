@@ -13,6 +13,7 @@ import 'package:waitless_mobile/src/presentation/widgets/shared/request_labels.d
 import 'package:waitless_mobile/src/services/injection_container.dart';
 import 'package:waitless_mobile/src/services/staff_session.dart';
 import 'package:waitless_mobile/src/utils/constants/app_colors.dart';
+import 'package:waitless_mobile/src/utils/constants/strings.dart';
 import 'package:waitless_mobile/src/utils/theme/app_theme.dart';
 
 class LiveQueuePage extends StatelessWidget {
@@ -40,6 +41,14 @@ class _LiveQueueView extends StatefulWidget {
 class _LiveQueueViewState extends State<_LiveQueueView> {
   final _session = sl<StaffSession>();
   String? _zone;
+
+  void _endShift() {
+    _session.endShift();
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      routeNamePinPage,
+      (route) => false,
+    );
+  }
 
   /// A waitress is looking at the room, not at her phone, so the buzz does more
   /// work here than the banner does.
@@ -86,7 +95,7 @@ class _LiveQueueViewState extends State<_LiveQueueView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(8, 8, 20, 0),
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                 child: Row(
                   children: [
                     Builder(
@@ -122,14 +131,17 @@ class _LiveQueueViewState extends State<_LiveQueueView> {
                         width: 8,
                         height: 8,
                         decoration: BoxDecoration(
-                          // Amber the moment a poll fails, so the floor team can
-                          // tell "quiet night" apart from "the app lost the server".
                           color: state.error == null
                               ? AppColors.sage
                               : AppColors.clay,
                           shape: BoxShape.circle,
                         ),
                       ),
+                    ),
+                    IconButton(
+                      onPressed: _endShift,
+                      tooltip: l10n.endShift,
+                      icon: const Icon(Icons.logout_rounded),
                     ),
                   ],
                 ),
