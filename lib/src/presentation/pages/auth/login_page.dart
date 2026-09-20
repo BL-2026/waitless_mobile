@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:waitless_mobile/src/config/app_localizations.dart';
 import 'package:waitless_mobile/src/presentation/blocs/auth/login/login_bloc.dart';
+import 'package:waitless_mobile/src/presentation/widgets/auth/google_sign_in_button.dart';
 import 'package:waitless_mobile/src/presentation/widgets/auth/header.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/primary_button.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/snackbars/custom_snack_bar.dart';
@@ -121,6 +122,18 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     },
                   ),
+                  const SizedBox(height: 18),
+                  AuthOrDivider(label: l10n.orLabel),
+                  const SizedBox(height: 18),
+                  GoogleSignInButton(
+                    label: l10n.continueWithGoogle,
+                    loading: _isLoggingIn,
+                    onPressed: () {
+                      context.read<LoginBloc>().add(
+                        const SignInWithGoogleEvent(),
+                      );
+                    },
+                  ),
                   const SizedBox(height: 24),
                   RichText(
                     text: TextSpan(
@@ -173,6 +186,8 @@ class _LoginPageState extends State<LoginPage> {
                         );
                       } else if (state is LoggingIn) {
                         setState(() => _isLoggingIn = true);
+                      } else if (state is LoginInitial) {
+                        setState(() => _isLoggingIn = false);
                       }
                     },
                     builder: (context, state) => const SizedBox.shrink(),

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:waitless_mobile/src/config/app_localizations.dart';
 import 'package:waitless_mobile/src/presentation/blocs/auth/login/login_bloc.dart';
+import 'package:waitless_mobile/src/presentation/widgets/auth/google_sign_in_button.dart';
 import 'package:waitless_mobile/src/presentation/widgets/auth/header.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/primary_button.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/snackbars/custom_snack_bar.dart';
@@ -81,6 +82,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 actionLabel: l10n.ok,
               ),
             );
+          } else if (state is LoginInitial) {
+            setState(() => isSigningUp = false);
           }
         },
         child: SafeArea(
@@ -170,6 +173,18 @@ class _SignUpPageState extends State<SignUpPage> {
                       label: l10n.signUp,
                       loading: isSigningUp,
                       onPressed: isSigningUp ? null : _submit,
+                    ),
+                    const SizedBox(height: 18),
+                    AuthOrDivider(label: l10n.orLabel),
+                    const SizedBox(height: 18),
+                    GoogleSignInButton(
+                      label: l10n.continueWithGoogle,
+                      loading: isSigningUp,
+                      onPressed: () {
+                        context.read<LoginBloc>().add(
+                          const SignInWithGoogleEvent(),
+                        );
+                      },
                     ),
                     const SizedBox(height: 24),
                     RichText(
