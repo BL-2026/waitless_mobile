@@ -2,9 +2,7 @@ import 'package:waitless_mobile/src/data/sources/network/api_client.dart';
 import 'package:waitless_mobile/src/domain/entities/service_request.dart';
 
 abstract class RequestRemoteDataSource {
-  /// Requests still `OPEN` or `ACKNOWLEDGED`, oldest first.
   Future<List<ServiceRequest>> listActive(String storeId);
-
   Future<void> acknowledge(String requestId, String staffId);
   Future<void> resolve(String requestId);
 }

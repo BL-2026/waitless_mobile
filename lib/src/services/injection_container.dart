@@ -70,7 +70,7 @@ Future<void> init() async {
     ..registerLazySingleton(() => ResolveRequestUseCase(sl()))
     //Repositories
     ..registerLazySingleton<RequestRepository>(
-      () => ApiRequestRepositoryImpl(sl(), sl()))
+      () => ApiRequestRepositoryImpl(sl(), sl(), sl()))
     //DataSource
     ..registerLazySingleton<StoreRemoteDataSource>(
       () => StoreApiRemoteDataSourceImpl(sl()))

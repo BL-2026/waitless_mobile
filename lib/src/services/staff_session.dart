@@ -1,9 +1,5 @@
 import 'package:waitless_mobile/src/exceptions/failure.dart';
 
-/// Who is on the floor right now: the venue this device is watching and the
-/// waitress who unlocked it with her PIN. Held in memory only — closing the app
-/// sends you back to the PIN screen, which is the behaviour you want on a
-/// device that gets passed around a restaurant.
 class StaffSession {
   String? storeId;
   String? storeName;
