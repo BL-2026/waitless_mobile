@@ -176,14 +176,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: _loading
-                ? Column(
-                    children: [
-                      _LogoutBar(l10n: l10n),
-                      Expanded(
-                        child: CustomLoadingIndicator(text: l10n.loading),
-                      ),
-                    ],
-                  )
+                ? CustomLoadingIndicator(text: l10n.loading)
                 : !_hasStaff
                     ? _ErrorView(
                         message: _loadError ?? l10n.noStaffYet,
@@ -200,7 +193,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
     final hasError = _pinError != null;
     return Column(
       children: [
-        _LogoutBar(l10n: l10n),
+        const SizedBox(height: 28),
         const BrandMark(compact: true),
         const Spacer(),
         Text(_session.storeName ?? l10n.pinUnlock, style: AppTheme.display(28)),
@@ -239,25 +232,6 @@ class _PinEntryPageState extends State<PinEntryPage> {
         ),
         const Spacer(),
       ],
-    );
-  }
-}
-
-class _LogoutBar extends StatelessWidget {
-  const _LogoutBar({required this.l10n});
-
-  final AppLocalizations l10n;
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: TextButton.icon(
-        onPressed: () => context.read<LogoutCubit>().logout(),
-        icon: const Icon(Icons.logout_rounded, size: 18),
-        label: Text(l10n.logout),
-        style: TextButton.styleFrom(foregroundColor: AppColors.muted),
-      ),
     );
   }
 }
