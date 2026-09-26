@@ -16,9 +16,11 @@ import 'package:waitless_mobile/src/domain/repositories/request_repository.dart'
 import 'package:waitless_mobile/src/domain/usecases/auth/forgot_password.dart';
 import 'package:waitless_mobile/src/domain/usecases/auth/logout.dart';
 import 'package:waitless_mobile/src/domain/usecases/auth/sign_in.dart';
+import 'package:waitless_mobile/src/domain/usecases/auth/sign_in_with_google.dart';
 import 'package:waitless_mobile/src/domain/usecases/request_usecases.dart';
 import 'package:waitless_mobile/src/presentation/blocs/auth/login/login_bloc.dart';
 import 'package:waitless_mobile/src/presentation/cubits/auth/forgot_password/forgot_password_cubit.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:waitless_mobile/src/presentation/cubits/auth/logout/logout_cubit.dart';
 import 'package:waitless_mobile/src/presentation/cubits/language/language_cubit.dart';
@@ -31,12 +33,17 @@ Future<void> init() async {
   // AUTH
   sl
     //Business Logic
-    ..registerFactory(() => LoginBloc(signIn: sl(), signUp: sl()))
+    ..registerFactory(() => LoginBloc(
+          signIn: sl(),
+          signUp: sl(),
+          signInWithGoogle: sl(),
+        ))
     ..registerFactory(() => ForgotPasswordCubit(forgotPassword: sl()))
     ..registerFactory(() => LogoutCubit(logout: sl()))
     ..registerLazySingleton(LanguageCubit.new)
     //Usecases
     ..registerLazySingleton(() => SignIn(sl()))
+    ..registerLazySingleton(() => SignInWithGoogle(sl()))
     ..registerLazySingleton(() => SignUp(sl()))
     ..registerLazySingleton(() => ForgotPassword(sl()))
     ..registerLazySingleton(() => Logout(sl()))
@@ -45,7 +52,7 @@ Future<void> init() async {
       () => AuthRepositoryImpl(sl(), sl(), sl()))
     //DataSource
     ..registerLazySingleton<AuthRemoteDataSource>(
-      () => AuthFirebaseRemoteDataSourceImpl(sl()))
+      () => AuthFirebaseRemoteDataSourceImpl(sl(), sl()))
     ..registerLazySingleton<AccountRemoteDataSource>(
       () => AccountApiRemoteDataSourceImpl(sl()));
 
@@ -63,7 +70,7 @@ Future<void> init() async {
     ..registerLazySingleton(() => ResolveRequestUseCase(sl()))
     //Repositories
     ..registerLazySingleton<RequestRepository>(
-      () => ApiRequestRepositoryImpl(sl(), sl()))
+      () => ApiRequestRepositoryImpl(sl(), sl(), sl()))
     //DataSource
     ..registerLazySingleton<StoreRemoteDataSource>(
       () => StoreApiRemoteDataSourceImpl(sl()))
@@ -77,5 +84,8 @@ Future<void> init() async {
     ..registerLazySingleton(StaffSession.new)
     ..registerLazySingleton(() => WaitlessApiClient(sl(), sl()))
     ..registerLazySingleton(() => FirebaseAuth.instance)
+    ..registerLazySingleton(
+      () => GoogleSignIn(scopes: const ['email', 'profile']),
+    )
     ..registerLazySingleton(http.Client.new);
 }

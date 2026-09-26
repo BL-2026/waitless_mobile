@@ -183,6 +183,20 @@ class AppLocalizations {
     AppLanguage.es: 'Iniciar sesión',
   });
 
+  String get continueWithGoogle => _t(const {
+    AppLanguage.en: 'Continue with Google',
+    AppLanguage.fr: 'Continuer avec Google',
+    AppLanguage.ar: 'المتابعة عبر Google',
+    AppLanguage.es: 'Continuar con Google',
+  });
+
+  String get orLabel => _t(const {
+    AppLanguage.en: 'or',
+    AppLanguage.fr: 'ou',
+    AppLanguage.ar: 'أو',
+    AppLanguage.es: 'o',
+  });
+
   String get noAccount => _t(const {
     AppLanguage.en: "Don't have an account? ",
     AppLanguage.fr: "Vous n'avez pas de compte ? ",
@@ -447,6 +461,13 @@ class AppLocalizations {
     AppLanguage.fr: 'Terminé',
     AppLanguage.ar: 'تم',
     AppLanguage.es: 'Listo',
+  });
+
+  String get endShift => _t(const {
+    AppLanguage.en: 'End shift',
+    AppLanguage.fr: 'Terminer le service',
+    AppLanguage.ar: 'إنهاء الخدمة',
+    AppLanguage.es: 'Terminar turno',
   });
 
   String get logout => _t(const {

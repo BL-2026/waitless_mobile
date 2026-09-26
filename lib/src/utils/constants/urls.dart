@@ -17,3 +17,15 @@ const String waitlessApiBaseUrl = String.fromEnvironment(
   'WAITLESS_API_BASE_URL',
   defaultValue: 'http://localhost:8081',
 );
+
+/// STOMP endpoint derived from [waitlessApiBaseUrl] (`http` → `ws`, `https` → `wss`).
+String get waitlessWsUrl {
+  final base = waitlessApiBaseUrl.replaceAll(RegExp(r'/+$'), '');
+  if (base.startsWith('https://')) {
+    return 'wss://${base.substring('https://'.length)}/ws';
+  }
+  if (base.startsWith('http://')) {
+    return 'ws://${base.substring('http://'.length)}/ws';
+  }
+  return '$base/ws';
+}
