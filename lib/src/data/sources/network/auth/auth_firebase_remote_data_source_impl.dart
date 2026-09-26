@@ -3,17 +3,17 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:waitless_mobile/src/exceptions/user_already_exists.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:waitless_mobile/src/data/sources/network/auth/auth_remote_data_source.dart';
+import 'package:waitless_mobile/src/exceptions/app_error_code.dart';
 import 'package:waitless_mobile/src/exceptions/failure.dart';
 import 'package:waitless_mobile/src/exceptions/sign_in_cancelled.dart';
 import 'package:waitless_mobile/src/exceptions/user_not_found.dart';
 import 'package:waitless_mobile/src/services/shared_preferences_service.dart';
+import 'package:waitless_mobile/src/utils/helpers/firebase_failure.dart';
 
 class AuthFirebaseRemoteDataSourceImpl implements AuthRemoteDataSource {
   const AuthFirebaseRemoteDataSourceImpl(this._auth, this._googleSignIn);
   final FirebaseAuth _auth;
   final GoogleSignIn _googleSignIn;
-
-  static const firebaseException = 'FirebaseException';
 
   @override
   Future<void> signUp({
@@ -30,13 +30,20 @@ class AuthFirebaseRemoteDataSourceImpl implements AuthRemoteDataSource {
       await userCredential.user?.updateDisplayName(fullName);
 
       await SharedPreferencesService.addUserToSharedPreferences();
-    } on ApiFailure catch (e) {
-      throw ApiFailure(message: e.message, statusCode: e.statusCode);
+    } on ApiFailure {
+      rethrow;
     } on UserAlreadyExists catch (e) {
-      throw ApiFailure(message: e.message, statusCode: e.statusCode);
-    } on FirebaseException catch (e) {
       throw ApiFailure(
-          message: e.message ?? firebaseException, statusCode: e.code);
+        message: e.message,
+        statusCode: e.statusCode,
+        code: AppErrorCode.authEmailInUse,
+      );
+    } on FirebaseException catch (e) {
+      throw failureFromFirebase(
+        firebaseCode: e.code,
+        message: e.message,
+        fallbackCode: AppErrorCode.unknown,
+      );
     }
   }
 
@@ -46,8 +53,7 @@ class AuthFirebaseRemoteDataSourceImpl implements AuthRemoteDataSource {
       await _auth.currentUser?.delete();
       await SharedPreferencesService.deleteUserFromSharedPreferences();
     } on FirebaseException catch (e) {
-      throw ApiFailure(
-          message: e.message ?? firebaseException, statusCode: e.code);
+      throw failureFromFirebase(firebaseCode: e.code, message: e.message);
     }
   }
 
@@ -58,8 +64,16 @@ class AuthFirebaseRemoteDataSourceImpl implements AuthRemoteDataSource {
 
       await SharedPreferencesService.addUserToSharedPreferences();
     } on FirebaseException catch (e) {
+      final failure = failureFromFirebase(
+        firebaseCode: e.code,
+        message: e.message,
+        fallbackCode: AppErrorCode.authInvalidCredentials,
+      );
       throw UserNotFound(
-          message: e.message ?? firebaseException, statusCode: e.code);
+        message: failure.message,
+        statusCode: failure.statusCode,
+        code: failure.code,
+      );
     }
   }
 
@@ -82,22 +96,25 @@ class AuthFirebaseRemoteDataSourceImpl implements AuthRemoteDataSource {
     } on SignInCancelled {
       rethrow;
     } on FirebaseAuthException catch (e) {
-      throw ApiFailure(
-        message: e.message ?? firebaseException,
-        statusCode: e.code,
+      throw failureFromFirebase(
+        firebaseCode: e.code,
+        message: e.message,
+        fallbackCode: AppErrorCode.authGoogleFailed,
       );
     } on PlatformException catch (e) {
       if (e.code == 'sign_in_canceled' || e.code == 'sign_in_cancelled') {
         throw const SignInCancelled();
       }
       throw ApiFailure(
-        message: e.message ?? firebaseException,
+        message: e.message ?? e.code,
         statusCode: e.code,
+        code: AppErrorCode.authGoogleFailed,
       );
     } on FirebaseException catch (e) {
-      throw ApiFailure(
-        message: e.message ?? firebaseException,
-        statusCode: e.code,
+      throw failureFromFirebase(
+        firebaseCode: e.code,
+        message: e.message,
+        fallbackCode: AppErrorCode.authGoogleFailed,
       );
     }
   }
@@ -107,8 +124,16 @@ class AuthFirebaseRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       await _auth.sendPasswordResetEmail(email: email);
     } on FirebaseException catch (e) {
+      final failure = failureFromFirebase(
+        firebaseCode: e.code,
+        message: e.message,
+        fallbackCode: AppErrorCode.authResetFailed,
+      );
       throw UserNotFound(
-          message: e.message ?? firebaseException, statusCode: e.code);
+        message: failure.message,
+        statusCode: failure.statusCode,
+        code: failure.code,
+      );
     }
   }
 
@@ -119,8 +144,11 @@ class AuthFirebaseRemoteDataSourceImpl implements AuthRemoteDataSource {
       await _auth.signOut();
       await SharedPreferencesService.deleteUserFromSharedPreferences();
     } catch (e) {
-      throw const ApiFailure(
-          message: 'Something went wrong, please try again', statusCode: '505');
+      throw ApiFailure(
+        message: e.toString(),
+        statusCode: '505',
+        code: AppErrorCode.authLogoutFailed,
+      );
     }
   }
 }

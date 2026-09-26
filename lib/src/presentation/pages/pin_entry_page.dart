@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:waitless_mobile/src/config/app_localizations.dart';
+import 'package:waitless_mobile/src/utils/helpers/failure_messages.dart';
 import 'package:waitless_mobile/src/data/sources/network/staff/staff_remote_data_source.dart';
 import 'package:waitless_mobile/src/data/sources/network/store/store_remote_data_source.dart';
 import 'package:waitless_mobile/src/exceptions/failure.dart';
@@ -69,7 +70,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
       if (!mounted) return;
       setState(() {
         _loading = false;
-        _loadError = e.message;
+        _loadError = context.l10n.messageFor(e);
       });
     }
   }
@@ -122,7 +123,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
       if (!mounted) return;
       setState(() {
         _verifying = false;
-        _pinError = e.message;
+        _pinError = context.l10n.messageFor(e);
         _enteredPin = '';
       });
     }

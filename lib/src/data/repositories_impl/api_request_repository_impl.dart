@@ -5,6 +5,7 @@ import 'package:waitless_mobile/src/data/realtime/store_requests_realtime_client
 import 'package:waitless_mobile/src/data/sources/network/request/request_remote_data_source.dart';
 import 'package:waitless_mobile/src/domain/entities/service_request.dart';
 import 'package:waitless_mobile/src/domain/repositories/request_repository.dart';
+import 'package:waitless_mobile/src/exceptions/app_error_code.dart';
 import 'package:waitless_mobile/src/exceptions/failure.dart';
 import 'package:waitless_mobile/src/services/staff_session.dart';
 
@@ -40,8 +41,9 @@ class ApiRequestRepositoryImpl implements RequestRepository {
         } catch (e) {
           if (!controller.isClosed) {
             controller.addError(ApiFailure(
-              message: 'Cannot start live updates ($e)',
+              message: e.toString(),
               statusCode: '0',
+              code: AppErrorCode.liveUpdatesDisconnected,
             ));
           }
         }

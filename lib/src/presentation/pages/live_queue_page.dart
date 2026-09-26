@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:waitless_mobile/src/config/app_localizations.dart';
+import 'package:waitless_mobile/src/utils/helpers/failure_messages.dart';
 import 'package:waitless_mobile/src/domain/entities/request_status.dart';
 import 'package:waitless_mobile/src/domain/entities/service_request.dart';
 import 'package:waitless_mobile/src/presentation/cubits/auth/logout/logout_cubit.dart';
@@ -180,7 +181,7 @@ class _LiveQueueViewState extends State<_LiveQueueView> {
                     return Padding(
                       padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
                       child: Text(
-                        state.error!,
+                        context.l10n.messageFor(state.error!),
                         style: const TextStyle(
                           color: AppColors.clay,
                           fontSize: 12,

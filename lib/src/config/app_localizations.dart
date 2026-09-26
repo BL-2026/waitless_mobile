@@ -219,11 +219,183 @@ class AppLocalizations {
   });
 
   String get error => _t(const {
-    AppLanguage.en: 'Error',
-    AppLanguage.fr: 'Erreur',
-    AppLanguage.ar: 'خطأ',
-    AppLanguage.es: 'Error',
-  });
+        AppLanguage.en: 'Error',
+        AppLanguage.fr: 'Erreur',
+        AppLanguage.ar: 'خطأ',
+        AppLanguage.es: 'Error',
+      });
+
+  String get networkUnreachable => _t(const {
+        AppLanguage.en:
+            'No internet connection. Check your network and try again.',
+        AppLanguage.fr:
+            'Pas de connexion Internet. Vérifiez votre réseau et réessayez.',
+        AppLanguage.ar:
+            'لا يوجد اتصال بالإنترنت. تحقق من الشبكة وحاول مرة أخرى.',
+        AppLanguage.es:
+            'Sin conexión a Internet. Comprueba tu red e inténtalo de nuevo.',
+      });
+
+  String get serverError => _t(const {
+        AppLanguage.en: 'The server is temporarily unavailable. Please try again.',
+        AppLanguage.fr:
+            'Le serveur est temporairement indisponible. Veuillez réessayer.',
+        AppLanguage.ar: 'الخادم غير متاح مؤقتاً. يرجى المحاولة مرة أخرى.',
+        AppLanguage.es:
+            'El servidor no está disponible temporalmente. Inténtalo de nuevo.',
+      });
+
+  String get unexpectedError => _t(const {
+        AppLanguage.en: 'Something went wrong. Please try again.',
+        AppLanguage.fr: 'Une erreur est survenue. Veuillez réessayer.',
+        AppLanguage.ar: 'حدث خطأ ما. يرجى المحاولة مرة أخرى.',
+        AppLanguage.es: 'Algo ha salido mal. Inténtalo de nuevo.',
+      });
+
+  String get notFoundError => _t(const {
+        AppLanguage.en: 'We could not find what you asked for.',
+        AppLanguage.fr: 'Impossible de trouver ce que vous demandez.',
+        AppLanguage.ar: 'تعذر العثور على ما طلبته.',
+        AppLanguage.es: 'No hemos encontrado lo que pediste.',
+      });
+
+  String get badRequestError => _t(const {
+        AppLanguage.en: 'Some details look wrong. Please check and try again.',
+        AppLanguage.fr:
+            'Certaines informations semblent incorrectes. Vérifiez et réessayez.',
+        AppLanguage.ar: 'بعض التفاصيل غير صحيحة. يرجى التحقق والمحاولة مرة أخرى.',
+        AppLanguage.es:
+            'Algunos datos parecen incorrectos. Revísalos e inténtalo de nuevo.',
+      });
+
+  String get forbiddenError => _t(const {
+        AppLanguage.en: 'You do not have permission to do that.',
+        AppLanguage.fr: 'Vous n’avez pas l’autorisation de faire cela.',
+        AppLanguage.ar: 'ليس لديك صلاحية للقيام بذلك.',
+        AppLanguage.es: 'No tienes permiso para hacer eso.',
+      });
+
+  String get conflictError => _t(const {
+        AppLanguage.en: 'This conflicts with existing data. Please try again.',
+        AppLanguage.fr:
+            'Cela entre en conflit avec des données existantes. Réessayez.',
+        AppLanguage.ar: 'هذا يتعارض مع بيانات موجودة. يرجى المحاولة مرة أخرى.',
+        AppLanguage.es:
+            'Esto entra en conflicto con datos existentes. Inténtalo de nuevo.',
+      });
+
+  String get sessionExpired => _t(const {
+        AppLanguage.en: 'Your session expired. Please sign in again.',
+        AppLanguage.fr: 'Votre session a expiré. Veuillez vous reconnecter.',
+        AppLanguage.ar: 'انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.',
+        AppLanguage.es: 'Tu sesión ha caducado. Vuelve a iniciar sesión.',
+      });
+
+  String get invalidCredentials => _t(const {
+        AppLanguage.en: 'Incorrect email or password.',
+        AppLanguage.fr: 'Email ou mot de passe incorrect.',
+        AppLanguage.ar: 'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
+        AppLanguage.es: 'Correo o contraseña incorrectos.',
+      });
+
+  String get emailAlreadyInUse => _t(const {
+        AppLanguage.en: 'An account already exists with this email.',
+        AppLanguage.fr: 'Un compte existe déjà avec cet email.',
+        AppLanguage.ar: 'يوجد حساب بالفعل بهذا البريد الإلكتروني.',
+        AppLanguage.es: 'Ya existe una cuenta con este correo.',
+      });
+
+  String get weakPassword => _t(const {
+        AppLanguage.en: 'Please choose a stronger password.',
+        AppLanguage.fr: 'Veuillez choisir un mot de passe plus fort.',
+        AppLanguage.ar: 'يرجى اختيار كلمة مرور أقوى.',
+        AppLanguage.es: 'Elige una contraseña más segura.',
+      });
+
+  String get invalidEmail => _t(const {
+        AppLanguage.en: 'Please enter a valid email address.',
+        AppLanguage.fr: 'Veuillez saisir une adresse email valide.',
+        AppLanguage.ar: 'يرجى إدخال بريد إلكتروني صالح.',
+        AppLanguage.es: 'Introduce un correo electrónico válido.',
+      });
+
+  String get googleSignInFailed => _t(const {
+        AppLanguage.en: 'Google sign-in failed. Please try again.',
+        AppLanguage.fr: 'La connexion Google a échoué. Veuillez réessayer.',
+        AppLanguage.ar: 'فشل تسجيل الدخول عبر Google. يرجى المحاولة مرة أخرى.',
+        AppLanguage.es: 'Falló el inicio de sesión con Google. Inténtalo de nuevo.',
+      });
+
+  String get passwordResetFailed => _t(const {
+        AppLanguage.en: 'We could not send the reset email. Please try again.',
+        AppLanguage.fr:
+            'Impossible d’envoyer l’email de réinitialisation. Réessayez.',
+        AppLanguage.ar: 'تعذر إرسال بريد إعادة التعيين. يرجى المحاولة مرة أخرى.',
+        AppLanguage.es:
+            'No pudimos enviar el correo de restablecimiento. Inténtalo de nuevo.',
+      });
+
+  String get logoutFailed => _t(const {
+        AppLanguage.en: 'Could not sign out. Please try again.',
+        AppLanguage.fr: 'Impossible de se déconnecter. Veuillez réessayer.',
+        AppLanguage.ar: 'تعذر تسجيل الخروج. يرجى المحاولة مرة أخرى.',
+        AppLanguage.es: 'No se pudo cerrar sesión. Inténtalo de nuevo.',
+      });
+
+  String get tooManyAttempts => _t(const {
+        AppLanguage.en: 'Too many attempts. Please wait a moment and try again.',
+        AppLanguage.fr:
+            'Trop de tentatives. Attendez un instant et réessayez.',
+        AppLanguage.ar: 'محاولات كثيرة جداً. انتظر قليلاً ثم حاول مرة أخرى.',
+        AppLanguage.es:
+            'Demasiados intentos. Espera un momento e inténtalo de nuevo.',
+      });
+
+  String get accountDisabled => _t(const {
+        AppLanguage.en: 'This account has been disabled.',
+        AppLanguage.fr: 'Ce compte a été désactivé.',
+        AppLanguage.ar: 'تم تعطيل هذا الحساب.',
+        AppLanguage.es: 'Esta cuenta ha sido desactivada.',
+      });
+
+  String get liveUpdatesDisconnected => _t(const {
+        AppLanguage.en: 'Live updates disconnected. Reconnecting…',
+        AppLanguage.fr: 'Mises à jour en direct coupées. Reconnexion…',
+        AppLanguage.ar: 'انقطع التحديث المباشر. جارٍ إعادة الاتصال…',
+        AppLanguage.es: 'Actualizaciones en vivo desconectadas. Reconectando…',
+      });
+
+  String get liveUpdatesUnauthorized => _t(const {
+        AppLanguage.en: 'Live updates were rejected. Please sign in again.',
+        AppLanguage.fr:
+            'Les mises à jour en direct ont été refusées. Reconnectez-vous.',
+        AppLanguage.ar: 'تم رفض التحديث المباشر. يرجى تسجيل الدخول مرة أخرى.',
+        AppLanguage.es:
+            'Se rechazaron las actualizaciones en vivo. Vuelve a iniciar sesión.',
+      });
+
+  String get liveSyncFailed => _t(const {
+        AppLanguage.en: 'Could not sync the live queue. Please try again.',
+        AppLanguage.fr:
+            'Impossible de synchroniser la file en direct. Réessayez.',
+        AppLanguage.ar: 'تعذر مزامنة قائمة الانتظار المباشرة. حاول مرة أخرى.',
+        AppLanguage.es:
+            'No se pudo sincronizar la cola en vivo. Inténtalo de nuevo.',
+      });
+
+  String get noVenueSelected => _t(const {
+        AppLanguage.en: 'No venue selected.',
+        AppLanguage.fr: 'Aucun établissement sélectionné.',
+        AppLanguage.ar: 'لم يتم اختيار أي مكان.',
+        AppLanguage.es: 'No hay local seleccionado.',
+      });
+
+  String get staffPinRequired => _t(const {
+        AppLanguage.en: 'Enter your PIN first.',
+        AppLanguage.fr: 'Saisissez d’abord votre code PIN.',
+        AppLanguage.ar: 'أدخل رمز PIN أولاً.',
+        AppLanguage.es: 'Introduce primero tu PIN.',
+      });
 
   String get accountCreated => _t(const {
     AppLanguage.en: 'Congratulations, your account was created successfully',
@@ -246,13 +418,6 @@ class AppLocalizations {
     AppLanguage.ar: 'يرجى إدخال اسمك ورقم هاتف وبريد إلكتروني وكلمة مرور صالحة',
     AppLanguage.es:
         'Introduce tu nombre, un teléfono, un correo y una contraseña válidos',
-  });
-
-  String get invalidEmail => _t(const {
-    AppLanguage.en: 'Please enter a valid email address',
-    AppLanguage.fr: 'Veuillez saisir une adresse email valide',
-    AppLanguage.ar: 'يرجى إدخال بريد إلكتروني صالح',
-    AppLanguage.es: 'Introduce una dirección de correo válida',
   });
 
   String get forgotPasswordHint => _t(const {

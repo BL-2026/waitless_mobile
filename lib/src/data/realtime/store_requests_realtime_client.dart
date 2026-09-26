@@ -6,6 +6,7 @@ import 'package:stomp_dart_client/stomp_dart_client.dart';
 import 'package:waitless_mobile/src/data/realtime/active_requests_reducer.dart';
 import 'package:waitless_mobile/src/data/sources/network/request/request_remote_data_source.dart';
 import 'package:waitless_mobile/src/domain/entities/service_request.dart';
+import 'package:waitless_mobile/src/exceptions/app_error_code.dart';
 import 'package:waitless_mobile/src/exceptions/failure.dart';
 import 'package:waitless_mobile/src/utils/constants/urls.dart';
 
@@ -52,8 +53,9 @@ class StoreRequestsRealtimeClient {
         onWebSocketError: (error) {
           if (!_disposed) {
             _onError(ApiFailure(
-              message: 'Live updates disconnected ($error)',
+              message: error.toString(),
               statusCode: '0',
+              code: AppErrorCode.liveUpdatesDisconnected,
             ));
           }
         },
@@ -62,6 +64,7 @@ class StoreRequestsRealtimeClient {
             _onError(ApiFailure(
               message: frame.body ?? 'Live updates rejected',
               statusCode: '401',
+              code: AppErrorCode.liveUpdatesUnauthorized,
             ));
           }
         },
@@ -111,8 +114,9 @@ class StoreRequestsRealtimeClient {
     } catch (e) {
       if (!_disposed) {
         _onError(ApiFailure(
-          message: 'Cannot sync live queue ($e)',
+          message: e.toString(),
           statusCode: '0',
+          code: AppErrorCode.liveSyncFailed,
         ));
       }
     }
@@ -138,15 +142,17 @@ class StoreRequestsRealtimeClient {
     final user = _auth.currentUser;
     if (user == null) {
       throw const ApiFailure(
-        message: 'You are not signed in',
+        message: 'Not signed in',
         statusCode: '401',
+        code: AppErrorCode.authSessionMissing,
       );
     }
     final token = await user.getIdToken();
     if (token == null || token.isEmpty) {
       throw const ApiFailure(
-        message: 'You are not signed in',
+        message: 'Not signed in',
         statusCode: '401',
+        code: AppErrorCode.authSessionMissing,
       );
     }
     return token;

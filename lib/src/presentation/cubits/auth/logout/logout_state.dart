@@ -18,7 +18,10 @@ class LogoutSuccess extends LogoutState {
 }
 
 class LogoutFailure extends LogoutState {
-  final String errorMessage;
+  final Failure failure;
 
-  const LogoutFailure(this.errorMessage);
+  const LogoutFailure(this.failure);
+
+  @override
+  List<Object> get props => [failure];
 }

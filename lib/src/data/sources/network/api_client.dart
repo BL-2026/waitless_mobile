@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
+import 'package:waitless_mobile/src/exceptions/app_error_code.dart';
 import 'package:waitless_mobile/src/exceptions/failure.dart';
 import 'package:waitless_mobile/src/utils/constants/urls.dart';
 
@@ -36,7 +37,11 @@ class WaitlessApiClient {
       rethrow;
     } catch (e) {
       // Socket errors, DNS failures, the backend not running at all.
-      throw ApiFailure(message: 'Cannot reach the server ($e)', statusCode: '0');
+      throw ApiFailure(
+        message: e.toString(),
+        statusCode: '0',
+        code: AppErrorCode.networkUnreachable,
+      );
     }
     return _decode(response);
   }
@@ -45,8 +50,9 @@ class WaitlessApiClient {
     final user = _auth.currentUser;
     if (user == null) {
       throw const ApiFailure(
-        message: 'You are not signed in',
+        message: 'Not signed in',
         statusCode: '401',
+        code: AppErrorCode.authSessionMissing,
       );
     }
     return {
@@ -63,16 +69,20 @@ class WaitlessApiClient {
       return body.isEmpty ? null : jsonDecode(body);
     }
 
-    String message;
+    String message = response.reasonPhrase ?? 'Request failed';
+    String? code;
     try {
-      message = (jsonDecode(body) as Map<String, dynamic>)['message']
-              ?.toString() ??
-          response.reasonPhrase ??
-          'Request failed';
+      final json = jsonDecode(body) as Map<String, dynamic>;
+      message = json['message']?.toString() ?? message;
+      code = json['code']?.toString();
     } on FormatException {
-      message = response.reasonPhrase ?? 'Request failed';
+      // Non-JSON error body; status alone is enough for localization.
     }
 
-    throw ApiFailure(message: message, statusCode: '${response.statusCode}');
+    throw ApiFailure(
+      message: message,
+      statusCode: '${response.statusCode}',
+      code: code,
+    );
   }
 }

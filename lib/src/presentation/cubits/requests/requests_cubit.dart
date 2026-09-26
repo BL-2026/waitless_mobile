@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:waitless_mobile/src/domain/entities/service_request.dart';
 import 'package:waitless_mobile/src/domain/usecases/request_usecases.dart';
+import 'package:waitless_mobile/src/exceptions/app_error_code.dart';
 import 'package:waitless_mobile/src/exceptions/failure.dart';
 
 class RequestsState {
@@ -11,7 +12,7 @@ class RequestsState {
 
   /// Set when the live stream failed. The queue keeps the requests it already has
   /// so a dropped connection doesn't blank the screen mid-service.
-  final String? error;
+  final Failure? error;
 
   /// Requests the latest snapshot found that the one before it didn't. Like [error]
   /// this resets on every new state rather than carrying forward, so the alert
@@ -31,7 +32,7 @@ class RequestsState {
   RequestsState copyWith({
     List<ServiceRequest>? requests,
     bool? loading,
-    String? error,
+    Failure? error,
     List<ServiceRequest>? arrivals,
   }) {
     return RequestsState(
@@ -69,7 +70,13 @@ class RequestsCubit extends Cubit<RequestsState> {
       onError: (Object e) => emit(
         state.copyWith(
           loading: false,
-          error: e is Failure ? e.message : e.toString(),
+          error: e is Failure
+              ? e
+              : ApiFailure(
+                  message: e.toString(),
+                  statusCode: '0',
+                  code: AppErrorCode.networkUnreachable,
+                ),
         ),
       ),
     );
@@ -98,7 +105,7 @@ class RequestsCubit extends Cubit<RequestsState> {
     try {
       await action();
     } on Failure catch (e) {
-      emit(state.copyWith(error: e.message));
+      emit(state.copyWith(error: e));
     }
   }
 

@@ -18,7 +18,10 @@ class ForgotPasswordEmailSent extends ForgotPasswordState {
 }
 
 class ForgotPasswordFailure extends ForgotPasswordState {
-  final String errorMessage;
+  final Failure failure;
 
-  const ForgotPasswordFailure(this.errorMessage);
+  const ForgotPasswordFailure(this.failure);
+
+  @override
+  List<Object> get props => [failure];
 }

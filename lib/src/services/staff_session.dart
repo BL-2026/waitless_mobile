@@ -1,3 +1,4 @@
+import 'package:waitless_mobile/src/exceptions/app_error_code.dart';
 import 'package:waitless_mobile/src/exceptions/failure.dart';
 
 class StaffSession {
@@ -12,7 +13,10 @@ class StaffSession {
     final id = storeId;
     if (id == null) {
       throw const ApiFailure(
-          message: 'No venue selected', statusCode: '400');
+        message: 'No venue selected',
+        statusCode: '400',
+        code: AppErrorCode.noVenueSelected,
+      );
     }
     return id;
   }
@@ -22,7 +26,10 @@ class StaffSession {
     final id = staffId;
     if (id == null) {
       throw const ApiFailure(
-          message: 'Enter your PIN first', statusCode: '400');
+        message: 'Enter your PIN first',
+        statusCode: '400',
+        code: AppErrorCode.staffPinRequired,
+      );
     }
     return id;
   }

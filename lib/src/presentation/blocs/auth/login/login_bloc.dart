@@ -5,6 +5,7 @@ import 'package:waitless_mobile/src/domain/usecases/auth/sign_up.dart';
 import 'package:equatable/equatable.dart';
 import 'package:waitless_mobile/src/domain/usecases/auth/sign_in.dart';
 import 'package:waitless_mobile/src/domain/usecases/auth/sign_in_with_google.dart';
+import 'package:waitless_mobile/src/exceptions/failure.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
@@ -36,8 +37,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       password: event.password,
     ));
 
-    response.fold((f) => emit(LoginFailure(f.message)),
-        (r) => emit(const LoginSuccess()));
+    response.fold((f) => emit(LoginFailure(f)), (r) => emit(const LoginSuccess()));
   }
 
   Future<void> _signInHandler(
@@ -50,8 +50,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     };
     final response = await _signIn(params);
 
-    response.fold((f) => emit(LoginFailure(f.message)),
-        (r) => emit(const LoginSuccess()));
+    response.fold((f) => emit(LoginFailure(f)), (r) => emit(const LoginSuccess()));
   }
 
   Future<void> _signInWithGoogleHandler(
@@ -64,7 +63,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       if (f.statusCode == 'cancelled') {
         emit(LoginInitial());
       } else {
-        emit(LoginFailure(f.message));
+        emit(LoginFailure(f));
       }
     }, (r) => emit(const LoginSuccess()));
   }

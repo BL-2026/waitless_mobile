@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:waitless_mobile/src/config/app_localizations.dart';
+import 'package:waitless_mobile/src/utils/helpers/failure_messages.dart';
 import 'package:waitless_mobile/src/presentation/blocs/auth/login/login_bloc.dart';
 import 'package:waitless_mobile/src/presentation/widgets/auth/google_sign_in_button.dart';
 import 'package:waitless_mobile/src/presentation/widgets/auth/header.dart';
@@ -180,7 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                           context: context,
                           builder: (context) => AppAlert(
                             title: l10n.error,
-                            content: state.errorMessage,
+                            content: context.l10n.messageFor(state.failure),
                             actionLabel: l10n.ok,
                           ),
                         );

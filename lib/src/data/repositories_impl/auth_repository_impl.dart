@@ -3,6 +3,7 @@ import 'package:waitless_mobile/src/data/sources/network/account/account_remote_
 import 'package:waitless_mobile/src/data/sources/network/auth/auth_remote_data_source.dart';
 import 'package:waitless_mobile/src/domain/entities/account.dart';
 import 'package:waitless_mobile/src/domain/repositories/auth_repository.dart';
+import 'package:waitless_mobile/src/exceptions/app_error_code.dart';
 import 'package:waitless_mobile/src/exceptions/failure.dart';
 import 'package:waitless_mobile/src/exceptions/sign_in_cancelled.dart';
 import 'package:waitless_mobile/src/exceptions/user_not_found.dart';
@@ -17,6 +18,12 @@ class AuthRepositoryImpl implements AuthRepository {
   const AuthRepositoryImpl(
       this._dataSource, this._accountDataSource, this._session);
 
+  ApiFailure _wrap(Failure e) => ApiFailure(
+        message: e.message,
+        statusCode: e.statusCode,
+        code: e.code,
+      );
+
   @override
   ResultFuture<void> signUp({
     required String fullName,
@@ -29,7 +36,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await _dataSource.signUp(
           fullName: fullName, email: email, password: password);
     } on ApiFailure catch (e) {
-      return Left(ApiFailure(message: e.message, statusCode: e.statusCode));
+      return Left(_wrap(e));
     }
 
     try {
@@ -44,10 +51,14 @@ class AuthRepositoryImpl implements AuthRepository {
       // A Firebase identity with no backend account can never sign in usefully, and
       // it holds the e-mail hostage. Undo it so the owner can just try again.
       await _rollBackFirebaseUser();
-      return Left(ApiFailure(message: e.message, statusCode: e.statusCode));
+      return Left(_wrap(e));
     } catch (e) {
       await _rollBackFirebaseUser();
-      return Left(ApiFailure(message: e.toString(), statusCode: '500'));
+      return Left(ApiFailure(
+        message: e.toString(),
+        statusCode: '500',
+        code: AppErrorCode.internalError,
+      ));
     }
   }
 
@@ -70,9 +81,9 @@ class AuthRepositoryImpl implements AuthRepository {
 
       return const Right(null);
     } on UserNotFound catch (e) {
-      return Left(ApiFailure(message: e.message, statusCode: e.statusCode));
+      return Left(_wrap(e));
     } on ApiFailure catch (e) {
-      return Left(ApiFailure(message: e.message, statusCode: e.statusCode));
+      return Left(_wrap(e));
     }
   }
 
@@ -83,11 +94,11 @@ class AuthRepositoryImpl implements AuthRepository {
       await _accountDataSource.createAccount(const CreateAccountRequest());
       return const Right(null);
     } on SignInCancelled catch (e) {
-      return Left(ApiFailure(message: e.message, statusCode: e.statusCode));
+      return Left(_wrap(e));
     } on UserNotFound catch (e) {
-      return Left(ApiFailure(message: e.message, statusCode: e.statusCode));
+      return Left(_wrap(e));
     } on ApiFailure catch (e) {
-      return Left(ApiFailure(message: e.message, statusCode: e.statusCode));
+      return Left(_wrap(e));
     }
   }
 
@@ -98,7 +109,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
       return Right(result);
     } on UserNotFound catch (e) {
-      return Left(ApiFailure(message: e.message, statusCode: e.statusCode));
+      return Left(_wrap(e));
     }
   }
 
@@ -111,7 +122,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
       return Right(result);
     } on UserNotFound catch (e) {
-      return Left(ApiFailure(message: e.message, statusCode: e.statusCode));
+      return Left(_wrap(e));
     }
   }
 }

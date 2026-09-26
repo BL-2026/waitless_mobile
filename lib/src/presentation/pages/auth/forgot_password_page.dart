@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:waitless_mobile/src/config/app_localizations.dart';
+import 'package:waitless_mobile/src/utils/helpers/failure_messages.dart';
 import 'package:waitless_mobile/src/presentation/cubits/auth/forgot_password/forgot_password_cubit.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/primary_button.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/snackbars/custom_snack_bar.dart';
@@ -107,7 +108,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           context: context,
                           builder: (context) => AppAlert(
                             title: l10n.error,
-                            content: state.errorMessage,
+                            content: context.l10n.messageFor(state.failure),
                             actionLabel: l10n.ok,
                           ),
                         );
