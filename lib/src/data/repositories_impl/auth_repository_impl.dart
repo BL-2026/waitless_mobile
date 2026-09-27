@@ -103,6 +103,21 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  ResultFuture<void> signInWithGoogle() async {
+    try {
+      await _dataSource.signInWithGoogle();
+      await _accountDataSource.createAccount(const CreateAccountRequest());
+      return const Right(null);
+    } on SignInCancelled catch (e) {
+      return Left(ApiFailure(message: e.message, statusCode: e.statusCode));
+    } on UserNotFound catch (e) {
+      return Left(ApiFailure(message: e.message, statusCode: e.statusCode));
+    } on ApiFailure catch (e) {
+      return Left(ApiFailure(message: e.message, statusCode: e.statusCode));
+    }
+  }
+
+  @override
   ResultFuture<void> forgotPassword(String email) async {
     try {
       final result = await _dataSource.forgotPassword(email);

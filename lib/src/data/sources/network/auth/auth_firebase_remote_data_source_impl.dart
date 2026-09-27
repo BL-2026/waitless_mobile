@@ -120,6 +120,45 @@ class AuthFirebaseRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
+  Future<void> signInWithGoogle() async {
+    try {
+      final googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        throw const SignInCancelled();
+      }
+
+      final googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      await _auth.signInWithCredential(credential);
+      await SharedPreferencesService.addUserToSharedPreferences();
+    } on SignInCancelled {
+      rethrow;
+    } on FirebaseAuthException catch (e) {
+      throw ApiFailure(
+        message: e.message ?? firebaseException,
+        statusCode: e.code,
+      );
+    } on PlatformException catch (e) {
+      if (e.code == 'sign_in_canceled' || e.code == 'sign_in_cancelled') {
+        throw const SignInCancelled();
+      }
+      throw ApiFailure(
+        message: e.message ?? firebaseException,
+        statusCode: e.code,
+      );
+    } on FirebaseException catch (e) {
+      throw ApiFailure(
+        message: e.message ?? firebaseException,
+        statusCode: e.code,
+      );
+    }
+  }
+
+  @override
   Future<void> forgotPassword(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
