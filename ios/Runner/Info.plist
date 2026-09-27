@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Floorcall</string>
+	<string>Floor Call</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -38,13 +38,13 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Floorcall uses the camera if you take a photo of your venue or a menu item.</string>
+	<string>Floor Call uses the camera if you take a photo of your venue or a menu item.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Floorcall uses your photo library if you attach an existing photo of your venue or a menu item.</string>
+	<string>Floor Call uses your photo library if you attach an existing photo of your venue or a menu item.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Floorcall uses your location to place your venue on the map when you set it up.</string>
+	<string>Floor Call uses your location to place your venue on the map when you set it up.</string>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>Floorcall needs your local network to reach the restaurant backend on this Wi‑Fi.</string>
+	<string>Floor Call needs your local network to reach the restaurant backend on this Wi‑Fi.</string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_http._tcp</string>

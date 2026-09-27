@@ -28,7 +28,7 @@ class BrandMark extends StatelessWidget {
         ),
         SizedBox(width: compact ? 8 : 10),
         Text(
-          'Floorcall',
+          'Floor Call',
           style: AppTheme.display(compact ? 22 : 34).copyWith(color: color),
         ),
       ],

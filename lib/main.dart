@@ -17,7 +17,7 @@ import 'package:waitless_mobile/src/utils/theme/app_theme.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // ignore: avoid_print
-  print('Floorcall API → $waitlessApiBaseUrl');
+  print('Floor Call API → $waitlessApiBaseUrl');
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   await di.init();
@@ -50,7 +50,7 @@ class MainApp extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
             ],
             debugShowCheckedModeBanner: false,
-            title: 'Floorcall',
+            title: 'Floor Call',
             theme: AppTheme.light(),
             initialRoute:
                 isAuthenticated ? routeNamePinPage : routeNameLanguage,
