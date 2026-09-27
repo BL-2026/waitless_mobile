@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Waitless Mobile</string>
+	<string>Floorcall</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -37,8 +37,14 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Floorcall uses the camera if you take a photo of your venue or a menu item.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Floorcall uses your photo library if you attach an existing photo of your venue or a menu item.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Floorcall uses your location to place your venue on the map when you set it up.</string>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>Waitless needs your local network to reach the restaurant backend on this Wi‑Fi.</string>
+	<string>Floorcall needs your local network to reach the restaurant backend on this Wi‑Fi.</string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_http._tcp</string>

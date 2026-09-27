@@ -543,10 +543,10 @@ class AppLocalizations {
   });
 
   String get notificationBrand => _t(const {
-    AppLanguage.en: 'Waitless',
-    AppLanguage.fr: 'Waitless',
-    AppLanguage.ar: 'Waitless',
-    AppLanguage.es: 'Waitless',
+    AppLanguage.en: 'Floorcall',
+    AppLanguage.fr: 'Floorcall',
+    AppLanguage.ar: 'Floorcall',
+    AppLanguage.es: 'Floorcall',
   });
 
   String tableCalling(int number) => _t({
