@@ -227,13 +227,13 @@ class AppLocalizations {
 
   String get networkUnreachable => _t(const {
         AppLanguage.en:
-            'No internet connection. Check your network and try again.',
+            'Something went wrong. Please try again.',
         AppLanguage.fr:
-            'Pas de connexion Internet. Vérifiez votre réseau et réessayez.',
+            'Une erreur est survenue. Veuillez réessayer.',
         AppLanguage.ar:
-            'لا يوجد اتصال بالإنترنت. تحقق من الشبكة وحاول مرة أخرى.',
+            'حدث خطأ ما. يرجى المحاولة مرة أخرى.',
         AppLanguage.es:
-            'Sin conexión a Internet. Comprueba tu red e inténtalo de nuevo.',
+            'Algo salió mal. Por favor, inténtalo de nuevo.',
       });
 
   String get serverError => _t(const {
@@ -533,6 +533,41 @@ class AppLocalizations {
     AppLanguage.fr: 'Appels en salle',
     AppLanguage.ar: 'نداءات القاعة',
     AppLanguage.es: 'Llamadas de sala',
+  });
+
+  String get floorCallsChannelDescription => _t(const {
+    AppLanguage.en: 'A table is calling or asking for the bill',
+    AppLanguage.fr: 'Une table appelle ou demande l’addition',
+    AppLanguage.ar: 'طاولة تستدعي أو تطلب الحساب',
+    AppLanguage.es: 'Una mesa llama o pide la cuenta',
+  });
+
+  String get notificationBrand => _t(const {
+    AppLanguage.en: 'Waitless',
+    AppLanguage.fr: 'Waitless',
+    AppLanguage.ar: 'Waitless',
+    AppLanguage.es: 'Waitless',
+  });
+
+  String tableCalling(int number) => _t({
+    AppLanguage.en: 'Table $number is calling',
+    AppLanguage.fr: 'La table $number appelle',
+    AppLanguage.ar: 'الطاولة $number تستدعي',
+    AppLanguage.es: 'La mesa $number está llamando',
+  });
+
+  String tableWantsBill(int number) => _t({
+    AppLanguage.en: 'Table $number wants the bill',
+    AppLanguage.fr: 'La table $number demande l’addition',
+    AppLanguage.ar: 'الطاولة $number تطلب الحساب',
+    AppLanguage.es: 'La mesa $number pide la cuenta',
+  });
+
+  String tableWantsBillWithMethod(int number, String method) => _t({
+    AppLanguage.en: 'Table $number wants the bill · $method',
+    AppLanguage.fr: 'La table $number demande l’addition · $method',
+    AppLanguage.ar: 'الطاولة $number تطلب الحساب · $method',
+    AppLanguage.es: 'La mesa $number pide la cuenta · $method',
   });
 
   String newCallsCount(int count) => _t({

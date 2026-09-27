@@ -11,6 +11,10 @@ import 'package:waitless_mobile/src/data/sources/network/auth/auth_remote_data_s
 import 'package:waitless_mobile/src/data/sources/network/request/request_remote_data_source.dart';
 import 'package:waitless_mobile/src/data/sources/network/staff/staff_remote_data_source.dart';
 import 'package:waitless_mobile/src/data/sources/network/store/store_remote_data_source.dart';
+import 'package:waitless_mobile/src/data/sources/network/device/device_token_remote_data_source.dart';
+import 'package:waitless_mobile/src/services/push_notification_service.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:waitless_mobile/src/domain/repositories/auth_repository.dart';
 import 'package:waitless_mobile/src/domain/repositories/request_repository.dart';
 import 'package:waitless_mobile/src/domain/usecases/auth/forgot_password.dart';
@@ -49,7 +53,7 @@ Future<void> init() async {
     ..registerLazySingleton(() => Logout(sl()))
     //Repositories
     ..registerLazySingleton<AuthRepository>(
-      () => AuthRepositoryImpl(sl(), sl(), sl()))
+      () => AuthRepositoryImpl(sl(), sl(), sl(), sl()))
     //DataSource
     ..registerLazySingleton<AuthRemoteDataSource>(
       () => AuthFirebaseRemoteDataSourceImpl(sl(), sl()))
@@ -77,13 +81,23 @@ Future<void> init() async {
     ..registerLazySingleton<StaffRemoteDataSource>(
       () => StaffApiRemoteDataSourceImpl(sl()))
     ..registerLazySingleton<RequestRemoteDataSource>(
-      () => RequestApiRemoteDataSourceImpl(sl()));
+      () => RequestApiRemoteDataSourceImpl(sl()))
+    ..registerLazySingleton(() => DeviceTokenRemoteDataSource(sl()))
+    ..registerLazySingleton(() => PushNotificationService(
+          sl(),
+          sl(),
+          sl(),
+          sl(),
+          sl(),
+        ));
 
   sl
     //External dependencies
     ..registerLazySingleton(StaffSession.new)
     ..registerLazySingleton(() => WaitlessApiClient(sl(), sl()))
     ..registerLazySingleton(() => FirebaseAuth.instance)
+    ..registerLazySingleton(() => FirebaseMessaging.instance)
+    ..registerLazySingleton(FlutterLocalNotificationsPlugin.new)
     ..registerLazySingleton(
       () => GoogleSignIn(scopes: const ['email', 'profile']),
     )

@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:waitless_mobile/src/exceptions/app_error_code.dart';
 import 'package:waitless_mobile/src/exceptions/failure.dart';
+import 'package:waitless_mobile/src/utils/constants/shared_variables.dart';
 import 'package:waitless_mobile/src/utils/constants/urls.dart';
 
 /// Thin wrapper over the Waitless backend: attaches the current Firebase ID token
@@ -27,16 +28,26 @@ class WaitlessApiClient {
         ));
   }
 
+  Future<dynamic> delete(String path, [Object? body]) async {
+    return _send(() async => _client.delete(
+          _uri(path),
+          headers: await _headers(),
+          body: body == null ? null : jsonEncode(body),
+        ));
+  }
+
   Uri _uri(String path) => Uri.parse('$waitlessApiBaseUrl$path');
+
+  static const _timeout = Duration(seconds: timeOut);
 
   Future<dynamic> _send(Future<http.Response> Function() request) async {
     final http.Response response;
     try {
-      response = await request();
+      response = await request().timeout(_timeout);
     } on ApiFailure {
       rethrow;
     } catch (e) {
-      // Socket errors, DNS failures, the backend not running at all.
+      // Socket errors, DNS failures, timeouts, backend not reachable from this device.
       throw ApiFailure(
         message: e.toString(),
         statusCode: '0',
@@ -55,9 +66,10 @@ class WaitlessApiClient {
         code: AppErrorCode.authSessionMissing,
       );
     }
+    final token = await user.getIdToken().timeout(_timeout);
     return {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${await user.getIdToken()}',
+      'Authorization': 'Bearer $token',
     };
   }
 

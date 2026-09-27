@@ -12,6 +12,7 @@ import 'package:waitless_mobile/src/presentation/widgets/shared/empty_queue_view
 import 'package:waitless_mobile/src/presentation/widgets/shared/request_card.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/request_labels.dart';
 import 'package:waitless_mobile/src/services/injection_container.dart';
+import 'package:waitless_mobile/src/services/push_notification_service.dart';
 import 'package:waitless_mobile/src/services/staff_session.dart';
 import 'package:waitless_mobile/src/utils/constants/app_colors.dart';
 import 'package:waitless_mobile/src/utils/constants/strings.dart';

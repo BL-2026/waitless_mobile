@@ -8,6 +8,7 @@ import 'package:waitless_mobile/src/data/sources/network/request/request_remote_
 import 'package:waitless_mobile/src/domain/entities/service_request.dart';
 import 'package:waitless_mobile/src/exceptions/app_error_code.dart';
 import 'package:waitless_mobile/src/exceptions/failure.dart';
+import 'package:waitless_mobile/src/utils/constants/shared_variables.dart';
 import 'package:waitless_mobile/src/utils/constants/urls.dart';
 
 /// Owns the STOMP session for one store: connect, subscribe, resync, reconnect.
@@ -45,7 +46,8 @@ class StoreRequestsRealtimeClient {
       config: StompConfig(
         url: waitlessWsUrl,
         stompConnectHeaders: connectHeaders,
-        reconnectDelay: const Duration(seconds: 3),
+        reconnectDelay: const Duration(seconds: reconnectDelay),
+        connectionTimeout: const Duration(seconds: timeOut),
         beforeConnect: () async {
           connectHeaders['Authorization'] = 'Bearer ${await _idToken()}';
         },
