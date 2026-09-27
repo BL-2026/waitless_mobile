@@ -12,9 +12,11 @@ import 'package:waitless_mobile/src/presentation/widgets/shared/primary_button.d
 import 'package:waitless_mobile/src/presentation/widgets/shared/snackbars/custom_snack_bar.dart';
 import 'package:waitless_mobile/src/presentation/widgets/shared/spinners/custom_loading_indicator.dart';
 import 'package:waitless_mobile/src/services/injection_container.dart';
+import 'package:waitless_mobile/src/services/push_notification_service.dart';
 import 'package:waitless_mobile/src/services/staff_session.dart';
 import 'package:waitless_mobile/src/utils/constants/app_colors.dart';
 import 'package:waitless_mobile/src/utils/constants/strings.dart';
+import 'package:waitless_mobile/src/utils/constants/urls.dart';
 import 'package:waitless_mobile/src/utils/theme/app_theme.dart';
 import 'live_queue_page.dart';
 
@@ -122,6 +124,13 @@ class _PinEntryPageState extends State<PinEntryPage> {
         ..staffId = verified.id
         ..staffName = verified.fullName;
 
+      try {
+        await sl<PushNotificationService>().registerForCurrentStore();
+      } on Failure {
+        // The floor still works without push; the in-app banner covers the open app.
+      }
+
+      if (!mounted) return;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const LiveQueuePage()),
       );
@@ -255,6 +264,16 @@ class _ErrorView extends StatelessWidget {
           Text(message,
               textAlign: TextAlign.center,
               style: const TextStyle(color: AppColors.muted, fontSize: 14)),
+          const SizedBox(height: 12),
+          Text(
+            waitlessApiBaseUrl,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: AppColors.muted,
+              fontSize: 11,
+              fontFamily: 'Courier',
+            ),
+          ),
           const SizedBox(height: 24),
           PrimaryButton(label: l10n.retry, onPressed: onRetry),
           const SizedBox(height: 12),

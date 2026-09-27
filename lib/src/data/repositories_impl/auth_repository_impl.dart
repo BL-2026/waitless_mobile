@@ -7,6 +7,7 @@ import 'package:waitless_mobile/src/exceptions/app_error_code.dart';
 import 'package:waitless_mobile/src/exceptions/failure.dart';
 import 'package:waitless_mobile/src/exceptions/sign_in_cancelled.dart';
 import 'package:waitless_mobile/src/exceptions/user_not_found.dart';
+import 'package:waitless_mobile/src/services/push_notification_service.dart';
 import 'package:waitless_mobile/src/services/staff_session.dart';
 import 'package:waitless_mobile/src/utils/typedef.dart';
 
@@ -14,9 +15,10 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _dataSource;
   final AccountRemoteDataSource _accountDataSource;
   final StaffSession _session;
+  final PushNotificationService _push;
 
   const AuthRepositoryImpl(
-      this._dataSource, this._accountDataSource, this._session);
+      this._dataSource, this._accountDataSource, this._session, this._push);
 
   ApiFailure _wrap(Failure e) => ApiFailure(
         message: e.message,
@@ -116,8 +118,8 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   ResultFuture<void> logout() async {
     try {
+      await _push.unregister();
       final result = await _dataSource.logout();
-      // Signing out ends the shift: the next person has to re-enter their PIN.
       _session.clear();
 
       return Right(result);

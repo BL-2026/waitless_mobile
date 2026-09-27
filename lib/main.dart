@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -8,13 +9,19 @@ import 'package:waitless_mobile/src/config/router.dart';
 import 'package:waitless_mobile/src/domain/entities/app_language.dart';
 import 'package:waitless_mobile/src/presentation/cubits/language/language_cubit.dart';
 import 'package:waitless_mobile/src/services/injection_container.dart' as di;
+import 'package:waitless_mobile/src/services/push_notification_service.dart';
 import 'package:waitless_mobile/src/utils/constants/strings.dart';
+import 'package:waitless_mobile/src/utils/constants/urls.dart';
 import 'package:waitless_mobile/src/utils/theme/app_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // ignore: avoid_print
+  print('Waitless API → $waitlessApiBaseUrl');
   await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   await di.init();
+  await di.sl<PushNotificationService>().start();
   final languageCubit = di.sl<LanguageCubit>();
   await languageCubit.load();
   runApp(MainApp(languageCubit: languageCubit));

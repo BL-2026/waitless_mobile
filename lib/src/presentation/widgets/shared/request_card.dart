@@ -115,13 +115,41 @@ class RequestCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 6),
-          Text(
-            request.typeLabel(l10n),
-            style: const TextStyle(
-              color: AppColors.espresso,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
+          Row(
+            children: [
+              Flexible(
+                child: Text(
+                  request.type == RequestType.requestBill
+                      ? l10n.requestingBill
+                      : request.typeLabel(l10n),
+                  style: const TextStyle(
+                    color: AppColors.espresso,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              if (request.type == RequestType.requestBill &&
+                  request.paymentMethod != null) ...[
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: AppColors.gold.withValues(alpha: 0.16),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    l10n.paymentMethodName(request.paymentMethod!).toUpperCase(),
+                    style: const TextStyle(
+                      color: AppColors.espresso,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                ),
+              ],
+            ],
           ),
           const SizedBox(height: 14),
           Row(
